@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class WorldRenderer : MonoBehaviour
 {
@@ -9,24 +10,45 @@ public class WorldRenderer : MonoBehaviour
     public Transform wallPrefab = null;
     public Transform groundPrefab = null;
 
+    // Size of Maze Array
+    [Range(10, 100)]
+    public int mazeXLength = 20;
+    [Range(10, 100)]
+    public int mazeZLength = 20;
+
     // Amplify the x,z values by this much
     [Range(1, 20)]
     public int size = 1;
 
+    public AIController aIController;
     private WorldGenerator generator;
     
     void Start()
     {
-        generator = new WorldGenerator();
+        // Generate World
+        generator = new WorldGenerator(mazeXLength, mazeZLength);
         var world = generator.GenerateWorld();
+
+        // Render World
         Draw(world);
+
+        // Bake NavMesh (Requires NaveMeshComponents package)
+        NavMeshSurface nm = GameObject.FindObjectOfType<NavMeshSurface>();
+        nm.BuildNavMesh();
+
+        // Spawn AIs
+        int unityXSize = generator.getXLength() * size; 
+        int unityZSize = generator.getZLength() * size;
+        Vector3 center = new Vector3(unityXSize / 2, 0, unityZSize / 2);
+        int range = size / 2;
+        aIController.SpawnAIs(center, range);
     }
 
     private void Draw(WorldSpace[,] world)
     {
-        for (int worldX = 0; worldX < generator.xLength; worldX++)
+        for (int worldX = 0; worldX < generator.getXLength(); worldX++)
         {
-            for (int worldZ = 0; worldZ < generator.zLength; worldZ++)
+            for (int worldZ = 0; worldZ < generator.getZLength(); worldZ++)
             {
                 WorldSpace space = world[worldX, worldZ];
                 if (space == null) {
