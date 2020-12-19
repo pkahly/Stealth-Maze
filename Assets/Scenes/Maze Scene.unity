@@ -185,7 +185,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -241,13 +241,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: 0.5735764, y: 0, z: 0, w: 0.8191521}
+  m_LocalPosition: {x: 0, y: 100, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 70, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,7 +325,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 10, y: 30, z: 10}
+  m_LocalPosition: {x: 350, y: 700, z: 350}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -408,7 +408,7 @@ PrefabInstance:
     - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
         type: 3}
       propertyPath: numAIs
-      value: 1
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6465063226360021218, guid: 57e3e72466d8442e39a3b2eed876d419,
         type: 3}
@@ -431,6 +431,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
+      propertyPath: addLoops
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
+        type: 3}
       propertyPath: aiPrefab
       value: 
       objectReference: {fileID: 5734996943334326553, guid: 5871bb393938088888ceafa428017922,
@@ -441,6 +446,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4387231585157815232, guid: 16653f8c7f965962f98040a38b7b8011,
         type: 3}
+    - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
+        type: 3}
+      propertyPath: mazeXLength
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
+        type: 3}
+      propertyPath: mazeZLength
+      value: 35
+      objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: aIController

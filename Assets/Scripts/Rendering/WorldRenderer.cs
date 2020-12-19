@@ -12,9 +12,10 @@ public class WorldRenderer : MonoBehaviour
 
     // Size of Maze Array
     [Range(10, 100)]
-    public int mazeXLength = 20;
+    public int mazeXLength = 50;
     [Range(10, 100)]
-    public int mazeZLength = 20;
+    public int mazeZLength = 50;
+    public bool addLoops = true;
 
     // Amplify the x,z values by this much
     [Range(1, 20)]
@@ -26,7 +27,7 @@ public class WorldRenderer : MonoBehaviour
     void Start()
     {
         // Generate World
-        generator = new WorldGenerator(mazeXLength, mazeZLength);
+        generator = new WorldGenerator(mazeXLength, mazeZLength, addLoops);
         var world = generator.GenerateWorld();
 
         // Render World
@@ -39,9 +40,7 @@ public class WorldRenderer : MonoBehaviour
         // Spawn AIs
         int unityXSize = generator.getXLength() * size; 
         int unityZSize = generator.getZLength() * size;
-        Vector3 center = new Vector3(unityXSize / 2, 0, unityZSize / 2);
-        int range = size / 2;
-        aIController.SpawnAIs(center, range);
+        aIController.SetSpawnArea(unityXSize, unityZSize);
     }
 
     private void Draw(WorldSpace[,] world)

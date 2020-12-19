@@ -6,14 +6,18 @@ class WorldGenerator {
     // Size of Maze Array
     private int mazeXLength;
     private int mazeZLength;
+    
+    private bool addLoops;
+    private int numLoops = 10;
 
     // Size of world (mazeSize * 2 + 1)
     private int xLength;
     private int zLength;
 
-    public WorldGenerator(int mazeXLength, int mazeZLength) {
+    public WorldGenerator(int mazeXLength, int mazeZLength, bool addLoops) {
         this.mazeXLength = mazeXLength;
         this.mazeZLength = mazeZLength;
+        this.addLoops = addLoops;
 
         // The World must be bigger to hold the walls
         this.xLength = mazeXLength * 2 + 1;
@@ -32,6 +36,31 @@ class WorldGenerator {
 
         // Generate Maze
         var maze = MazeGenerator.Generate(mazeXLength, mazeZLength);
+
+        // Add Loops
+        if (addLoops) {
+            System.Random rand = new System.Random();
+
+            for (int i = 0; i < numLoops; i++) {
+                // Select an interior cell
+                int x = rand.Next(1, mazeXLength- 2);
+                int z = rand.Next(1, mazeZLength - 2);
+
+                // Knock down one wall
+                if (maze[x, z].HasFlag(WallState.UP)) {
+                    maze[x, z] &= ~WallState.UP;
+                } else if (maze[x, z].HasFlag(WallState.DOWN)) {
+                    maze[x, z] &= ~WallState.DOWN;
+                } else if (maze[x, z].HasFlag(WallState.RIGHT)) {
+                    maze[x, z] &= ~WallState.RIGHT;
+                } else if (maze[x, z].HasFlag(WallState.LEFT)) {
+                    maze[x, z] &= ~WallState.LEFT;
+                }
+
+            }
+        }
+
+        // Add Maze to the World
         ApplyMazeToWorld(world, maze);
     
         return world;
