@@ -56,11 +56,11 @@ public class AIController : MonoBehaviour {
     private Vector3 GetNavPosition(Vector3 center) {
         // Get Nearest Point on NavMesh
         NavMeshHit hit;
-        if (NavMesh.SamplePosition(center, out hit, 25.0f, NavMesh.AllAreas)) {
+        if (NavMesh.SamplePosition(center, out hit, 50.0f, NavMesh.AllAreas)) {
             return hit.position;
         }
             
-        throw new ArgumentException("Failed to Get Point");
+        throw new ArgumentException("Failed to Get NavMesh Point");
     }
 
     Vector3[] GetPatrolPath() {
@@ -77,7 +77,7 @@ public class AIController : MonoBehaviour {
             for (int i = 0; i < numAIs; i++) {
                 AIData ai = aiData[i];
 
-                if (ai.transform.position == ai.patrolPath[ai.patrolIndex]) {
+                if (Vector3.Distance(ai.transform.position, ai.patrolPath[ai.patrolIndex]) < 2) {
                     ai.patrolIndex++;
                 }
 

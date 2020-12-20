@@ -61,21 +61,21 @@ public class WorldRenderer : MonoBehaviour
 
                 // TODO: Create map from Type -> Prefab
                 if (space.type == WorldSpace.Type.ground) {
-                    DrawSpace(unityX, unityZ, groundPrefab);
+                    DrawSpace(unityX, 0, unityZ, groundPrefab);
                 } else if (space.type == WorldSpace.Type.wall) {
-                    DrawSpace(unityX, unityZ, wallPrefab);
+                    DrawSpace(unityX, 5, unityZ, wallPrefab);
                 }
             }
         }
 
     }
 
-    private void DrawSpace(int unityX, int unityZ, Transform prefab) {
+    private void DrawSpace(int unityX, int yOffset, int unityZ, Transform prefab) {
         // Create new instance of prefab
         var obj = Instantiate(prefab, transform) as Transform;
 
         // Move to the given position, (in unity coordinates)
-        obj.position = new Vector3(unityX, 0, unityZ);
+        obj.position = new Vector3(unityX, yOffset, unityZ);
 
         // Scale the object to fill the spot
         // Multiply through by size because planes need their scale set to 0.1 instead of 1
