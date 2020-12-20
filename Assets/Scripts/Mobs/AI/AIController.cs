@@ -23,6 +23,7 @@ public class AIController : MonoBehaviour {
     public float turnSpeed = 90;
     public float attackDistance = 8;
     public float timeToLosePlayer = 5;
+    public AudioSource alarm;
 
     private static System.Random rand = new System.Random();
 
@@ -42,6 +43,10 @@ public class AIController : MonoBehaviour {
         if (xSize <= 0 || zSize <= 0) {
             throw new ArgumentException("Call SetSpawnArea First");
         }
+
+        // Loop alarm sound
+        alarm.loop = true;
+        alarm.Stop();
 
         for (int i = 0; i < numAIs; i++) {
             // Create Patrol Path
@@ -111,7 +116,7 @@ public class AIController : MonoBehaviour {
                     if (ai.patrolIndex >= patrolPathSize) {
                         ai.patrolIndex = 0;
                     }
-                    
+
                     ai.agent.SetDestination(ai.patrolPath[ai.patrolIndex]);
                 }
             }
@@ -121,6 +126,7 @@ public class AIController : MonoBehaviour {
     }
 
     IEnumerator Attack(Vector3 lastSeenPosition) {
+        alarm.Play();
         float waitTime = 0.5f;
 
         bool canSeePlayer = true;
@@ -137,18 +143,18 @@ public class AIController : MonoBehaviour {
                 }
 
                 // Attack if close enough
-                if (Vector3.Distance(ai.transform.position, player.position) <= attackDistance) {
+                if (Vector3.Distance(ai.transform.position, lastSeenPosition) <= attackDistance) {
                     ai.spotLight.color = Color.red;
                     
                     // Stop and face player
                     ai.agent.SetDestination(ai.transform.position);
-                    StartCoroutine(TurnToFace(ai.transform, player.position));
+                    StartCoroutine(TurnToFace(ai.transform, lastSeenPosition));
 
                     // TODO attack
                 }
                 // Otherwise move closer
                 else {
-                    ai.agent.SetDestination(player.position);
+                    ai.agent.SetDestination(lastSeenPosition);
                 }
             }
 
@@ -165,6 +171,7 @@ public class AIController : MonoBehaviour {
 
         Debug.Log("Lost Player near " + lastSeenPosition);
         StartCoroutine(Patrol());
+        alarm.Stop();
     }
 
     bool CanSeePlayer(Transform ai) {
