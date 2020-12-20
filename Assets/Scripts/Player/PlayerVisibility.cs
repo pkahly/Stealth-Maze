@@ -7,6 +7,8 @@ class PlayerVisibility: MonoBehaviour {
     [SerializeField] private LayerMask visibilityMask;
     [SerializeField] private Text visibilityText;
 
+    public bool isVisible;
+
     public void Start() {
         StartCoroutine(DetectVisibility());
     }
@@ -17,8 +19,10 @@ class PlayerVisibility: MonoBehaviour {
             Collider[] intersecting = Physics.OverlapSphere(center, 0.1f, visibilityMask, QueryTriggerInteraction.Collide);
 
             if (intersecting.Length != 0) {
+                isVisible = false;
                 visibilityText.text = "Hidden";
             } else {
+                isVisible = true;
                 visibilityText.text = "Not Hidden";
             }
 

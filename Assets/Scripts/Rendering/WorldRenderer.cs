@@ -76,7 +76,7 @@ public class WorldRenderer : MonoBehaviour
                     }
 
                     // Place common props
-                    int numProps = rand.Next((size * size) / 2);
+                    int numProps = rand.Next(size);
                     for (int i = 0; i < numProps; i++) {
                         PlaceRandomProp(unityX, unityZ, commonPropPrefabs);
                     }

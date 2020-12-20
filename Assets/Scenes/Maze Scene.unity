@@ -409,6 +409,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!4 &1410752598 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0,
+    type: 3}
+  m_PrefabInstance: {fileID: 2125976988}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1987159442 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
@@ -677,6 +683,31 @@ PrefabInstance:
       propertyPath: numAIs
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1410752598}
+    - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
+        type: 3}
+      propertyPath: viewAngle
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
+        type: 3}
+      propertyPath: viewDistance
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
+        type: 3}
+      propertyPath: attackDistance
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
+        type: 3}
+      propertyPath: viewMask.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
     - target: {fileID: 6465063226360021218, guid: 57e3e72466d8442e39a3b2eed876d419,
         type: 3}
       propertyPath: m_Name
@@ -716,12 +747,12 @@ PrefabInstance:
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: mazeXLength
-      value: 20
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: mazeZLength
-      value: 20
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
@@ -770,7 +801,7 @@ PrefabInstance:
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: commonPropPrefabs.Array.size
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
@@ -816,6 +847,24 @@ PrefabInstance:
       propertyPath: commonPropPrefabs.Array.data[1]
       value: 
       objectReference: {fileID: 470934, guid: 7692fca38ff1e2a41a1150cb803fe20c, type: 3}
+    - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
+        type: 3}
+      propertyPath: commonPropPrefabs.Array.data[2]
+      value: 
+      objectReference: {fileID: 6446006228777908359, guid: 7506eb516abe3c47db10fdf571a3784c,
+        type: 3}
+    - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
+        type: 3}
+      propertyPath: commonPropPrefabs.Array.data[3]
+      value: 
+      objectReference: {fileID: 4280051509481637266, guid: 2d5d843765ed79c6da8a72ef4ac1f344,
+        type: 3}
+    - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
+        type: 3}
+      propertyPath: commonPropPrefabs.Array.data[4]
+      value: 
+      objectReference: {fileID: 4916516620739677718, guid: d69de1f729842a11dbb85821a09bf0cb,
+        type: 3}
     - target: {fileID: 7390512283814829267, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: m_RootOrder
