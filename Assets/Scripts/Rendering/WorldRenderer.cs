@@ -11,14 +11,17 @@ public class WorldRenderer : MonoBehaviour
     // Prefabs
     public Transform wallPrefab = null;
     public Transform brickFloorPrefab = null;
-    public Transform grassFloorPrefab = null;
+    //public Transform grassFloorPrefab = null;
+    public Transform finishPrefab = null;
     
     // Props
     public Transform[] rarePropPrefabs = null;
     public Transform[] grassPropPrefabs = null;
-    public Transform[] bramblePropPrefabs = null;
+    //public Transform[] bramblePropPrefabs = null;
     [Range(0, 50)]
-    public int rarePropChance = 10;
+    public int rarePropChance = 15;
+    [Range(0, 50)]
+    public int grassPropChance = 3;
 
     // Size of Maze Array
     [Range(10, 100)]
@@ -70,6 +73,22 @@ public class WorldRenderer : MonoBehaviour
                 int unityZ = worldZ * size;
 
                 if (space.type == WorldSpace.Type.floor) {
+                    DrawSpaceAndScale(unityX, 0, unityZ, brickFloorPrefab);
+
+                    // Randomly place grass prop
+                    if (rand.Next(grassPropChance) == 0) {
+                        PlaceRandomProp(unityX, unityZ, grassPropPrefabs);
+                    }
+
+                    // Randomly place rare prop
+                    if (rand.Next(rarePropChance) == 0) {
+                        PlaceRandomProp(unityX, unityZ, rarePropPrefabs);
+                    }
+
+                    
+
+
+                    /*
                     if (space.biome == WorldSpace.Biome.brick) {
                         DrawSpaceAndScale(unityX, 0, unityZ, brickFloorPrefab);
 
@@ -77,19 +96,31 @@ public class WorldRenderer : MonoBehaviour
                         if (rand.Next(rarePropChance) == 0) {
                             PlaceRandomProp(unityX, unityZ, rarePropPrefabs);
                         }
+
+                        // Place 0-4 grass props on bricks
+                        int numProps = rand.Next(5);
+                        for (int i = 0; i < numProps; i++) {
+                            PlaceRandomProp(unityX, unityZ, grassPropPrefabs);
+                        }
                     } else if (space.biome == WorldSpace.Biome.grass) {
                         DrawSpaceAndScale(unityX, 0, unityZ, grassFloorPrefab);
 
                         // Place grass props
-                        FillWithRandomProp(unityX, unityZ, size, grassPropPrefabs);
+                        int numProps = rand.Next(size, size * 2);
+                        for (int i = 0; i < numProps; i++) {
+                            PlaceRandomProp(unityX, unityZ, grassPropPrefabs);
+                        }
                     } else if (space.biome == WorldSpace.Biome.brambles) {
                         DrawSpaceAndScale(unityX, 0, unityZ, grassFloorPrefab);
 
                         // Place bramble props
                         FillWithRandomProp(unityX, unityZ, size, bramblePropPrefabs);
                     }
+                    */
                 } else if (space.type == WorldSpace.Type.wall) {
                     DrawSpaceAndScale(unityX, 5, unityZ, wallPrefab);
+                } else if (space.type == WorldSpace.Type.finish) {
+                    DrawSpaceAndScale(unityX, 0, unityZ, finishPrefab);
                 }
             }
         }

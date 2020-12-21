@@ -1,0 +1,59 @@
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+
+class PlayerStats: MonoBehaviour {
+    // UI Overlay
+    [SerializeField] private Text visibilityText;
+
+    // Visibility
+    private LayerMask lightCoverMask;
+    private LayerMask heavyCoverMask;
+    private int visibilityLevel;
+
+    // Health
+    private int health = 100;
+
+    public void Start() {
+        lightCoverMask = LayerMask.GetMask("Cover");
+        heavyCoverMask = LayerMask.GetMask("HeavyCover");
+
+        StartCoroutine(DetectVisibility());
+    }
+
+    IEnumerator DetectVisibility() {
+        while (true) {
+            Vector3 center = new Vector3(transform.position.x, 0, transform.position.z);
+            Collider[] lightCover = Physics.OverlapSphere(center, 0.1f, lightCoverMask, QueryTriggerInteraction.Collide);
+            Collider[] heavyCover = Physics.OverlapSphere(center, 0.1f, heavyCoverMask, QueryTriggerInteraction.Collide);
+
+            if (heavyCover.Length != 0) {
+                visibilityLevel = 0;
+            } else if (lightCover.Length != 0) {
+                visibilityLevel = 3;
+            } else {
+                visibilityLevel = 5;
+            }
+
+            // Update UI
+            visibilityText.text = "Visibility: " + visibilityLevel;
+
+            yield return new WaitForSeconds(.2f);
+        }
+    }
+
+    public int GetVisibility() {
+        return visibilityLevel;
+    }
+
+    public void TakeDamage(int damage) {
+        health -= damage;
+        Debug.Log("Health: " + health);
+
+        if (health <= 0) {
+            SceneManager.LoadScene("GameLose");
+        }
+    }
+}

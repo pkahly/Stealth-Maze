@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 3300904}
   - component: {fileID: 2364852}
   - component: {fileID: 1853120151854563298}
-  m_Layer: 10
-  m_Name: GrassE
+  m_Layer: 11
+  m_Name: Grass-big
   m_TagString: Cover
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

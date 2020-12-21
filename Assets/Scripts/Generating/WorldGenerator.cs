@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 
 class WorldGenerator {
+    private static System.Random rand = new System.Random();
+
     // Size of Maze Array
     private int mazeXLength;
     private int mazeZLength;
@@ -45,6 +47,9 @@ class WorldGenerator {
 
         // Add Maze to the World
         ApplyMazeToWorld(world, maze);
+
+        // Add Finish Zone
+        AddFinishZone(world, rand.Next(mazeXLength), rand.Next(mazeZLength));
     
         return world;
     }
@@ -70,6 +75,7 @@ class WorldGenerator {
                 // Set cell's coordinates to floor type
                 world[worldX, worldZ].type = WorldSpace.Type.floor;
 
+                /*
                 // Choose biome based on numWalls
                 // Dead ends will be brambles, and their wall space will be grass
                 WorldSpace.Biome wallBiome;
@@ -80,6 +86,7 @@ class WorldGenerator {
                     world[worldX, worldZ].biome = WorldSpace.Biome.brick;
                     wallBiome = WorldSpace.Biome.brick;
                 }
+                */
 
                 
 
@@ -89,7 +96,7 @@ class WorldGenerator {
                     int wallX = worldX;
                     int wallZ = worldZ + 1;
                     world[wallX, wallZ].type = WorldSpace.Type.floor;
-                    world[wallX, wallZ].biome = wallBiome;
+                    //world[wallX, wallZ].biome = wallBiome;
                 }
 
                 if (!cell.HasFlag(WallState.LEFT))
@@ -97,7 +104,7 @@ class WorldGenerator {
                     int wallX = worldX - 1;
                     int wallZ = worldZ;
                     world[wallX, wallZ].type = WorldSpace.Type.floor;
-                    world[wallX, wallZ].biome = wallBiome;
+                    //world[wallX, wallZ].biome = wallBiome;
                 }
 
                 // Only the last column needs to change the right walls
@@ -108,7 +115,7 @@ class WorldGenerator {
                         int wallX = worldX + 1;
                         int wallZ = worldZ;
                         world[wallX, wallZ].type = WorldSpace.Type.floor;
-                        world[wallX, wallZ].biome = wallBiome;
+                        //world[wallX, wallZ].biome = wallBiome;
                     }
                 }
 
@@ -120,7 +127,7 @@ class WorldGenerator {
                         int wallX = worldX;
                         int wallZ = worldZ - 1;
                         world[wallX, wallZ].type = WorldSpace.Type.floor;
-                        world[wallX, wallZ].biome = wallBiome;
+                        //world[wallX, wallZ].biome = wallBiome;
                     }
                 }
             }
@@ -129,8 +136,6 @@ class WorldGenerator {
     }
 
     public void AddLoops(WallState[,] maze) {
-        System.Random rand = new System.Random();
-
         for (int i = 0; i < numLoops; i++) {
             // Select an interior cell
             int x = rand.Next(1, mazeXLength- 2);
@@ -148,6 +153,13 @@ class WorldGenerator {
             }
 
         }
+    }
+
+    public void AddFinishZone(WorldSpace[,] world, int mazeX, int mazeZ) {
+        int worldX = mazeX * 2 + 1;
+        int worldZ = mazeZ * 2 + 1;
+
+        world[worldX, worldZ].type = WorldSpace.Type.finish;
     }
 
     public int getXLength() {

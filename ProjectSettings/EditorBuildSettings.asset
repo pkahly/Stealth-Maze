@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Maze Scene.unity
     guid: 5b8ab1b17e90f51469eba60d8c83eb2a
+  - enabled: 1
+    path: Assets/Scenes/GameWin.unity
+    guid: b6182f6f70a92bbe6be61605f28facbe
+  - enabled: 1
+    path: Assets/Scenes/GameLose.unity
+    guid: cd2ae15bfb2c08c0298c63ffd61b37ae
   m_configObjects: {}

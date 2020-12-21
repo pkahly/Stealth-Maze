@@ -17,13 +17,14 @@ public class AIController : MonoBehaviour {
     [Range(1,20)]
     public int numAIs = 5;
     public Transform aiPrefab;
-    public float viewDistance = 20;
     public float viewAngle = 90;
     public LayerMask viewMask;
     public float turnSpeed = 90;
     public float attackDistance = 8;
     public float timeToLosePlayer = 5;
-    public AudioSource alarm;
+    public AudioSource alarmSound;
+    public AudioSource attackSound;
+    public int attackDamage = 10;
 
     private static System.Random rand = new System.Random();
 
@@ -31,7 +32,17 @@ public class AIController : MonoBehaviour {
     private int xSize;
     private int zSize;
     private int patrolPathSize = 6;
-    private Color originalLightColor;
+    private PlayerStats playerStats;
+
+    private Dictionary<int, float> visibilityLevelToViewDistanceMap = new Dictionary<int, float>()
+    {
+        [5] = 40,
+        [4] = 30,
+        [3] = 20,
+        [2] = 10,
+        [1] = 5,
+        [0] = 1,
+    };
 
     public void SetSpawnArea(int xSize, int zSize) {     
         aiData = new AIData[numAIs];
@@ -43,10 +54,6 @@ public class AIController : MonoBehaviour {
         if (xSize <= 0 || zSize <= 0) {
             throw new ArgumentException("Call SetSpawnArea First");
         }
-
-        // Loop alarm sound
-        alarm.loop = true;
-        alarm.Stop();
 
         for (int i = 0; i < numAIs; i++) {
             // Create Patrol Path
@@ -63,6 +70,9 @@ public class AIController : MonoBehaviour {
             aiData[i].patrolIndex = 0;
             aiData[i].patrolPath = patrolPath;
         }
+
+        // Get reference to Player's stats
+        playerStats = player.GetComponent<PlayerStats>();
 
         // Start AI Movement
         StartCoroutine(Patrol());
@@ -101,23 +111,21 @@ public class AIController : MonoBehaviour {
         // Update path and look for player
         while (true) {
             for (int i = 0; i < numAIs; i++) {
-                AIData ai = aiData[i];
-
                 // Look for player
-                if (CanSeePlayer(ai.transform)) {
+                if (CanSeePlayer(aiData[i].transform)) {
                     Debug.Log("Found Player at " + player.position);
                     StartCoroutine(Attack(player.position));
                     yield break;
                 }
 
                 // Update Patrol Path
-                if (Vector3.Distance(ai.transform.position, ai.patrolPath[ai.patrolIndex]) < 5) {
-                    ai.patrolIndex++;
-                    if (ai.patrolIndex >= patrolPathSize) {
-                        ai.patrolIndex = 0;
+                if (Mathf.Abs(aiData[i].agent.velocity.x) < 1 && Mathf.Abs(aiData[i].agent.velocity.z) < 1) {
+                    aiData[i].patrolIndex += 1;
+                    if (aiData[i].patrolIndex >= aiData[i].patrolPath.Length) {
+                        aiData[i].patrolIndex = 0;
                     }
 
-                    ai.agent.SetDestination(ai.patrolPath[ai.patrolIndex]);
+                    aiData[i].agent.SetDestination(aiData[i].patrolPath[aiData[i].patrolIndex]);
                 }
             }
 
@@ -126,7 +134,7 @@ public class AIController : MonoBehaviour {
     }
 
     IEnumerator Attack(Vector3 lastSeenPosition) {
-        alarm.Play();
+        alarmSound.Play();
         float waitTime = 0.5f;
 
         bool canSeePlayer = true;
@@ -135,26 +143,36 @@ public class AIController : MonoBehaviour {
         while (visibleTimer < timeToLosePlayer) {
             canSeePlayer = false;
             for (int i = 0; i < numAIs; i++) {
-                AIData ai = aiData[i];
-
                 // Check if anyone can see the player
                 if (!canSeePlayer) {
-                    canSeePlayer = CanSeePlayer(ai.transform);
+                    canSeePlayer = CanSeePlayer(aiData[i].transform);
                 }
 
                 // Attack if close enough
-                if (Vector3.Distance(ai.transform.position, lastSeenPosition) <= attackDistance) {
-                    ai.spotLight.color = Color.red;
+                if (Vector3.Distance(aiData[i].transform.position, player.position) <= attackDistance) {
+                    aiData[i].spotLight.color = Color.red;
                     
                     // Stop and face player
-                    ai.agent.SetDestination(ai.transform.position);
-                    StartCoroutine(TurnToFace(ai.transform, lastSeenPosition));
+                    aiData[i].agent.SetDestination(aiData[i].transform.position);
+                    StartCoroutine(TurnToFace(aiData[i].transform, player.position));
 
-                    // TODO attack
+
+                    if (!attackSound.isPlaying) {
+                        attackSound.Play();
+                    }
+                    
+                    // Attempt attack (use error margin if we don't have a visual)
+                    int errorMargin = (int)Vector3.Distance(lastSeenPosition, player.position);
+
+                    if (canSeePlayer && rand.Next(1) == 0) {
+                        playerStats.TakeDamage(attackDamage);
+                    } else if (rand.Next(errorMargin) == 0) {
+                        playerStats.TakeDamage(attackDamage);
+                    }
                 }
                 // Otherwise move closer
                 else {
-                    ai.agent.SetDestination(lastSeenPosition);
+                    aiData[i].agent.SetDestination(player.position);
                 }
             }
 
@@ -171,18 +189,15 @@ public class AIController : MonoBehaviour {
 
         Debug.Log("Lost Player near " + lastSeenPosition);
         StartCoroutine(Patrol());
-        alarm.Stop();
+        alarmSound.Stop();
     }
 
     bool CanSeePlayer(Transform ai) {
+        // Get View distance from visibility level
+        float viewDistance = visibilityLevelToViewDistanceMap[playerStats.GetVisibility()];
+
         // Within View Distance
         if (Vector3.Distance(ai.position, player.position) > viewDistance) {
-            return false;
-        }
-
-        // Player is not hidden
-        PlayerVisibility visibilityScript = player.GetComponent<PlayerVisibility>();
-        if (!visibilityScript.isVisible) {
             return false;
         }
 

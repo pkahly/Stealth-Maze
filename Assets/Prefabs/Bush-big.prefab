@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 6421222752779657483}
   - component: {fileID: 6426805497955400493}
   - component: {fileID: 2662665438024579131}
-  m_Layer: 10
-  m_Name: Bush-big 1
+  m_Layer: 11
+  m_Name: Bush-big
   m_TagString: Cover
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

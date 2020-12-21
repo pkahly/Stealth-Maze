@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 400000}
   - component: {fileID: 14300000}
-  - component: {fileID: 277153702834300325}
+  - component: {fileID: 7723217064254312073}
   - component: {fileID: 11400000}
   - component: {fileID: 5400000}
   - component: {fileID: 8200000}
@@ -55,7 +55,7 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &277153702834300325
+--- !u!114 &7723217064254312073
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -64,12 +64,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0570c354bf403944aa03fd565a2a78ef, type: 3}
+  m_Script: {fileID: 11500000, guid: 9c2388c8188ba8861b491b89bb8dec8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibilityMask:
-    serializedVersion: 2
-    m_Bits: 1024
   visibilityText: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
