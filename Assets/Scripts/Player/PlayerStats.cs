@@ -29,12 +29,23 @@ class PlayerStats: MonoBehaviour {
             Collider[] lightCover = Physics.OverlapSphere(center, 0.1f, lightCoverMask, QueryTriggerInteraction.Collide);
             Collider[] heavyCover = Physics.OverlapSphere(center, 0.1f, heavyCoverMask, QueryTriggerInteraction.Collide);
 
-            if (heavyCover.Length != 0) {
-                visibilityLevel = 0;
-            } else if (lightCover.Length != 0) {
-                visibilityLevel = 3;
-            } else {
+            bool isDaytime = false; // TODO add day/night cycle
+            if (isDaytime) {
                 visibilityLevel = 5;
+
+                if (heavyCover.Length != 0) {
+                    visibilityLevel = 1;
+                } else if (lightCover.Length != 0) {
+                    visibilityLevel = 3;
+                }
+            } else {
+                visibilityLevel = 3;
+
+                if (heavyCover.Length != 0) {
+                    visibilityLevel = 0;
+                } else if (lightCover.Length != 0) {
+                    visibilityLevel = 1;
+                }
             }
 
             // Update UI

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4916516620737524788}
   - component: {fileID: 6741153227507605090}
   m_Layer: 10
-  m_Name: GrassE
+  m_Name: Grass-small
   m_TagString: Cover
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

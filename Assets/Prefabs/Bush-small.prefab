@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4260833113601246776}
   - component: {fileID: 5107834812868986158}
   m_Layer: 10
-  m_Name: Bush-big 1
+  m_Name: Bush-small
   m_TagString: Cover
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -91,5 +91,5 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.5, y: 1, z: 1.5}
   m_Center: {x: 0, y: 0.5, z: 0}

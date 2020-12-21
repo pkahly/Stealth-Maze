@@ -18,7 +18,6 @@ public class AIController : MonoBehaviour {
     public int numAIs = 5;
     public Transform aiPrefab;
     public float viewAngle = 90;
-    public LayerMask viewMask;
     public float turnSpeed = 90;
     public float attackDistance = 8;
     public float timeToLosePlayer = 5;
@@ -33,15 +32,17 @@ public class AIController : MonoBehaviour {
     private int zSize;
     private int patrolPathSize = 6;
     private PlayerStats playerStats;
+    private LayerMask obstacleMask;
+    private LayerMask heavyCoverMask;
 
     private Dictionary<int, float> visibilityLevelToViewDistanceMap = new Dictionary<int, float>()
     {
-        [5] = 40,
-        [4] = 30,
+        [5] = 100,
+        [4] = 40,
         [3] = 20,
         [2] = 10,
         [1] = 5,
-        [0] = 1,
+        [0] = 2,
     };
 
     public void SetSpawnArea(int xSize, int zSize) {     
@@ -54,6 +55,9 @@ public class AIController : MonoBehaviour {
         if (xSize <= 0 || zSize <= 0) {
             throw new ArgumentException("Call SetSpawnArea First");
         }
+
+        obstacleMask = LayerMask.GetMask("Obstacle");
+        heavyCoverMask = LayerMask.GetMask("HeavyCover");
 
         for (int i = 0; i < numAIs; i++) {
             // Create Patrol Path
@@ -195,9 +199,10 @@ public class AIController : MonoBehaviour {
     bool CanSeePlayer(Transform ai) {
         // Get View distance from visibility level
         float viewDistance = visibilityLevelToViewDistanceMap[playerStats.GetVisibility()];
+        float distanceToPlayer = Vector3.Distance(ai.position, player.position);
 
         // Within View Distance
-        if (Vector3.Distance(ai.position, player.position) > viewDistance) {
+        if (distanceToPlayer > viewDistance) {
             return false;
         }
 
@@ -208,8 +213,14 @@ public class AIController : MonoBehaviour {
             return false;
         }
 
-        // Line of Sight
-        if (Physics.Linecast(ai.position, player.position, viewMask)) {
+        // Line of Sight not blocked by obstacles
+        if (Physics.Linecast(ai.position, player.position, obstacleMask)) {
+            return false;
+        } 
+
+        // Line of Sight not blocked by heavy cover
+        // Heavy cover blocks vision unless player is within 2 units of guard
+        if (Physics.Linecast(ai.position, player.position, heavyCoverMask) && distanceToPlayer > 2) {
             return false;
         }
 
