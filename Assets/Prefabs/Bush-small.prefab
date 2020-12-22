@@ -16,8 +16,8 @@ GameObject:
   m_Name: Bush-small
   m_TagString: Cover
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_NavMeshLayer: 3
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &4280051509481637266
 Transform:

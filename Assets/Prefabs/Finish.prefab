@@ -12,12 +12,12 @@ GameObject:
   - component: {fileID: 2357437386862695811}
   - component: {fileID: 2357437386862695810}
   - component: {fileID: 2357437386862695821}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Finish
   m_TagString: Finish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &2357437386862695808
 Transform:
@@ -104,12 +104,12 @@ GameObject:
   m_Component:
   - component: {fileID: 2357437387687721237}
   - component: {fileID: 2357437387687721226}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &2357437387687721237
 Transform:

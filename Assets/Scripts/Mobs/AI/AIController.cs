@@ -17,7 +17,6 @@ public class AIController : MonoBehaviour {
     [Range(1,20)]
     public int numAIs = 5;
     public Transform aiPrefab;
-    public float viewAngle = 90;
     public float turnSpeed = 90;
     public float attackDistance = 8;
     public float timeToLosePlayer = 5;
@@ -203,13 +202,6 @@ public class AIController : MonoBehaviour {
 
         // Within View Distance
         if (distanceToPlayer > viewDistance) {
-            return false;
-        }
-
-        // Within View Angle
-        Vector3 dirToPlayer = (player.position - ai.position).normalized;
-        float angleToPlayer = Vector3.Angle(ai.forward, dirToPlayer);
-        if (angleToPlayer > viewAngle / 2f) {
             return false;
         }
 

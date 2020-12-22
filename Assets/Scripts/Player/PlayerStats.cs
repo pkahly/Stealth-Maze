@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 class PlayerStats: MonoBehaviour {
     // UI Overlay
     [SerializeField] private Text visibilityText;
+    [SerializeField] private Text healthText;
 
     // Visibility
     private LayerMask lightCoverMask;
@@ -21,6 +22,7 @@ class PlayerStats: MonoBehaviour {
         heavyCoverMask = LayerMask.GetMask("HeavyCover");
 
         StartCoroutine(DetectVisibility());
+        StartCoroutine(RefillHealth());
     }
 
     IEnumerator DetectVisibility() {
@@ -55,13 +57,22 @@ class PlayerStats: MonoBehaviour {
         }
     }
 
+    IEnumerator RefillHealth() {
+        while(true) {
+            health = Mathf.Min(100, health + 5);
+            healthText.text = "Health: " + health;
+
+            yield return new WaitForSeconds(30);
+        }
+    }
+
     public int GetVisibility() {
         return visibilityLevel;
     }
 
     public void TakeDamage(int damage) {
-        health -= damage;
-        Debug.Log("Health: " + health);
+        health = Mathf.Max(0, health - damage);
+        healthText.text = "Health: " + health;
 
         if (health <= 0) {
             SceneManager.LoadScene("GameLose");

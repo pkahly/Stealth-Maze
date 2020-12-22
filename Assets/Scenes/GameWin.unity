@@ -479,5 +479,50 @@ PrefabInstance:
       propertyPath: m_Name
       value: WinUI
       objectReference: {fileID: 0}
+    - target: {fileID: 5271207839416691543, guid: ba066fb4313f833db956605a6527efc8,
+        type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5271207839531975021, guid: ba066fb4313f833db956605a6527efc8,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 800
+      objectReference: {fileID: 0}
+    - target: {fileID: 5271207839531975021, guid: ba066fb4313f833db956605a6527efc8,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 449.92444
+      objectReference: {fileID: 0}
+    - target: {fileID: 5271207839531975021, guid: ba066fb4313f833db956605a6527efc8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5271207839531975021, guid: ba066fb4313f833db956605a6527efc8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.00016022
+      objectReference: {fileID: 0}
+    - target: {fileID: 5271207840049063909, guid: ba066fb4313f833db956605a6527efc8,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 800
+      objectReference: {fileID: 0}
+    - target: {fileID: 5271207840049063909, guid: ba066fb4313f833db956605a6527efc8,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 449.92456
+      objectReference: {fileID: 0}
+    - target: {fileID: 5271207840049063909, guid: ba066fb4313f833db956605a6527efc8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5271207840049063909, guid: ba066fb4313f833db956605a6527efc8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.0001049
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba066fb4313f833db956605a6527efc8, type: 3}

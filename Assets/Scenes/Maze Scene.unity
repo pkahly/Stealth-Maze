@@ -106,15 +106,15 @@ NavMeshSettings:
   m_BuildSettings:
     serializedVersion: 2
     agentTypeID: 0
-    agentRadius: 0.5
+    agentRadius: 2
     agentHeight: 2
-    agentSlope: 45
-    agentClimb: 0.4
+    agentSlope: 32.6
+    agentClimb: 1
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     minRegionArea: 2
     manualCellSize: 0
-    cellSize: 0.16666667
+    cellSize: 0.6666667
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
@@ -165,9 +165,21 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.6666667
   m_BuildHeightMesh: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &435802130 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4827081129479893868, guid: 11bb18d9ed9b3ed48be56fe745e37427,
+    type: 3}
+  m_PrefabInstance: {fileID: 5860998861171793186}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,6 +460,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7723217064254312073, guid: 5e9e851c0e142814dac026a256ba2ac0,
         type: 3}
+      propertyPath: healthText
+      value: 
+      objectReference: {fileID: 435802130}
+    - target: {fileID: 7723217064254312073, guid: 5e9e851c0e142814dac026a256ba2ac0,
+        type: 3}
       propertyPath: visibilityText
       value: 
       objectReference: {fileID: 43429224}
@@ -467,6 +484,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4827081129479893868, guid: 11bb18d9ed9b3ed48be56fe745e37427,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Health: 100'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4827081129479893868, guid: 11bb18d9ed9b3ed48be56fe745e37427,
+        type: 3}
+      propertyPath: m_FontData.m_Alignment
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 5860998860527684312, guid: 11bb18d9ed9b3ed48be56fe745e37427,
         type: 3}
       propertyPath: m_Name
@@ -602,10 +629,40 @@ PrefabInstance:
       propertyPath: m_RenderMode
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5860998861212594245, guid: 11bb18d9ed9b3ed48be56fe745e37427,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 57.772614
+      objectReference: {fileID: 0}
+    - target: {fileID: 5860998861212594245, guid: 11bb18d9ed9b3ed48be56fe745e37427,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.0000078678
+      objectReference: {fileID: 0}
     - target: {fileID: 5860998861212594250, guid: 11bb18d9ed9b3ed48be56fe745e37427,
         type: 3}
       propertyPath: m_Text
-      value: 
+      value: Visibility
+      objectReference: {fileID: 0}
+    - target: {fileID: 6260357898448974598, guid: 11bb18d9ed9b3ed48be56fe745e37427,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 100.679474
+      objectReference: {fileID: 0}
+    - target: {fileID: 6260357898448974598, guid: 11bb18d9ed9b3ed48be56fe745e37427,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 57.659172
+      objectReference: {fileID: 0}
+    - target: {fileID: 6260357898448974598, guid: 11bb18d9ed9b3ed48be56fe745e37427,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 49.91
+      objectReference: {fileID: 0}
+    - target: {fileID: 6260357898448974598, guid: 11bb18d9ed9b3ed48be56fe745e37427,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -28.943
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11bb18d9ed9b3ed48be56fe745e37427, type: 3}
