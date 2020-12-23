@@ -26,7 +26,6 @@ public class WorldRenderer : MonoBehaviour
     public int mazeXLength = 50;
     [Range(10, 100)]
     public int mazeZLength = 50;
-    public bool addLoops = true;
 
     // Amplify the x,z values by this much
     [Range(1, 20)]
@@ -38,7 +37,7 @@ public class WorldRenderer : MonoBehaviour
     void Start()
     {
         // Generate World
-        generator = new WorldGenerator(mazeXLength, mazeZLength, addLoops);
+        generator = new WorldGenerator(mazeXLength, mazeZLength);
         var world = generator.GenerateWorld();
 
         // Render World
