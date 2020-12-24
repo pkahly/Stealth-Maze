@@ -26,6 +26,8 @@ public class WorldRenderer : MonoBehaviour
     public int mazeXLength = 50;
     [Range(10, 100)]
     public int mazeZLength = 50;
+    [Range(0, 5)]
+    public int courtyardSize = 4;
 
     // Amplify the x,z values by this much
     [Range(1, 20)]
@@ -34,10 +36,9 @@ public class WorldRenderer : MonoBehaviour
     public AIController aIController;
     private WorldGenerator generator;
     
-    void Start()
-    {
+    void Start() {
         // Generate World
-        generator = new WorldGenerator(mazeXLength, mazeZLength);
+        generator = new WorldGenerator(mazeXLength, mazeZLength, courtyardSize);
         var world = generator.GenerateWorld();
 
         // Render World
@@ -53,8 +54,7 @@ public class WorldRenderer : MonoBehaviour
         aIController.SetSpawnArea(unityXSize, unityZSize);
     }
 
-    private void Draw(WorldSpace[,] world)
-    {
+    private void Draw(WorldSpace[,] world) {
         for (int worldX = 0; worldX < generator.getXLength(); worldX++)
         {
             for (int worldZ = 0; worldZ < generator.getZLength(); worldZ++)

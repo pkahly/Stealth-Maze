@@ -8,16 +8,7 @@ class WorldSpace {
         finish = 2,
     }
 
-/*
-    public enum Biome {
-        brick = 0,
-        grass = 1,
-        brambles = 2,
-    }
-*/
-
-    public Type type = Type.floor;
-    //public Biome biome = Biome.brick;
+    public Type type;
 
     public WorldSpace(Type type) {
         this.type = type;
