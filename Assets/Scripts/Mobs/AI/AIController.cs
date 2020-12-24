@@ -10,6 +10,7 @@ struct AIData {
     public Light spotLight;
     public int patrolIndex;
     public Vector3[] patrolPath;
+    public float attackCooldown;
 }
 
 public class AIController : MonoBehaviour {
@@ -17,9 +18,10 @@ public class AIController : MonoBehaviour {
     [Range(1,20)]
     public int numAIs = 5;
     public Transform aiPrefab;
-    public float turnSpeed = 90;
+    public float turnSpeed = 180;
     public float attackDistance = 8;
-    public float timeToLosePlayer = 5;
+    public float aiAttackCooldown = 5;
+    public float timeToLosePlayer = 2;
     public AudioSource alarmSound;
     public AudioSource attackSound;
     public int attackDamage = 10;
@@ -103,12 +105,13 @@ public class AIController : MonoBehaviour {
     IEnumerator Patrol() {
         // Give AI's their initial orders
         for (int i = 0; i < numAIs; i++) {
-            AIData ai = aiData[i];
-
-            ai.spotLight.color = Color.green;
-            ai.agent.SetDestination(ai.patrolPath[ai.patrolIndex]);
+            aiData[i].attackCooldown = 0;
+            aiData[i].spotLight.color = Color.green;
+            aiData[i].agent.SetDestination(aiData[i].patrolPath[aiData[i].patrolIndex]);
         }
+
         Debug.Log("Started Patrolling");
+        alarmSound.Stop();
         yield return new WaitForSeconds(1);
 
         // Update path and look for player
@@ -138,7 +141,7 @@ public class AIController : MonoBehaviour {
 
     IEnumerator Attack(Vector3 lastSeenPosition) {
         alarmSound.Play();
-        float waitTime = 0.5f;
+        float waitTime = 0.1f;
 
         bool canSeePlayer = true;
         float visibleTimer = 0;
@@ -152,30 +155,27 @@ public class AIController : MonoBehaviour {
                 }
 
                 // Attack if close enough
-                if (Vector3.Distance(aiData[i].transform.position, player.position) <= attackDistance) {
+                if (Vector3.Distance(aiData[i].transform.position, lastSeenPosition) <= attackDistance) {
                     aiData[i].spotLight.color = Color.red;
                     
                     // Stop and face player
                     aiData[i].agent.SetDestination(aiData[i].transform.position);
-                    StartCoroutine(TurnToFace(aiData[i].transform, player.position));
+                    StartCoroutine(TurnToFace(aiData[i].transform, lastSeenPosition));
+                
+                    // Attempt attack
+                    if (canSeePlayer && rand.Next(1) == 0 && aiData[i].attackCooldown <= 0) {
+                        if (!attackSound.isPlaying) {
+                            attackSound.Play();
+                        }
 
-
-                    if (!attackSound.isPlaying) {
-                        attackSound.Play();
-                    }
-                    
-                    // Attempt attack (use error margin if we don't have a visual)
-                    int errorMargin = (int)Vector3.Distance(lastSeenPosition, player.position);
-
-                    if (canSeePlayer && rand.Next(1) == 0) {
                         playerStats.TakeDamage(attackDamage);
-                    } else if (rand.Next(errorMargin) == 0) {
-                        playerStats.TakeDamage(attackDamage);
+                        aiData[i].attackCooldown = aiAttackCooldown;
                     }
                 }
                 // Otherwise move closer
                 else {
-                    aiData[i].agent.SetDestination(player.position);
+                    aiData[i].agent.SetDestination(lastSeenPosition);
+                    aiData[i].attackCooldown -= waitTime;
                 }
             }
 
@@ -191,8 +191,51 @@ public class AIController : MonoBehaviour {
         }
 
         Debug.Log("Lost Player near " + lastSeenPosition);
+        StartCoroutine(Hunt(lastSeenPosition));
+    }
+
+    IEnumerator Hunt(Vector3 lastSeenPosition) {
+        float waitTime = 0.1f;
+        float huntTimer = 0;
+        float maxHuntTime = 60;
+        int huntDistance = 30;
+
+        Debug.Log("Hunting around " + lastSeenPosition);
+
+        // Compute coordinates for hunting area
+        int minX = (int)Mathf.Max(0, lastSeenPosition.x - huntDistance);
+        int maxX = (int)Mathf.Min(xSize, lastSeenPosition.x + huntDistance);
+        int minZ = (int)Mathf.Max(0, lastSeenPosition.z - huntDistance);
+        int maxZ = (int)Mathf.Min(zSize, lastSeenPosition.z + huntDistance);
+
+        // Look for player
+        while (huntTimer < maxHuntTime) {
+            for (int i = 0; i < numAIs; i++) {
+                aiData[i].spotLight.color = Color.yellow;
+
+                // Look for player
+                if (CanSeePlayer(aiData[i].transform)) {
+                    Debug.Log("Found Player at " + player.position);
+                    StartCoroutine(Attack(player.position));
+                    yield break;
+                }
+
+                // Pick next search point
+                if (Mathf.Abs(aiData[i].agent.velocity.x) < 1 && Mathf.Abs(aiData[i].agent.velocity.z) < 1) {
+                    int x = rand.Next(minX, maxX);
+                    int z = rand.Next(minZ, maxZ);
+
+                    Vector3 position = GetNavPosition(new Vector3(x, 0, z));
+                    aiData[i].agent.SetDestination(position);
+                }
+            }
+            
+            huntTimer += waitTime;
+            yield return new WaitForSeconds(waitTime);
+        }
+
+        Debug.Log("Giving up hunting");
         StartCoroutine(Patrol());
-        alarmSound.Stop();
     }
 
     bool CanSeePlayer(Transform ai) {
@@ -211,8 +254,9 @@ public class AIController : MonoBehaviour {
         } 
 
         // Line of Sight not blocked by heavy cover
-        // Heavy cover blocks vision unless player is within 2 units of guard
-        if (Physics.Linecast(ai.position, player.position, heavyCoverMask) && distanceToPlayer > 2) {
+        // Treat this the same as visibility level 0
+        float lowestViewDistance = visibilityLevelToViewDistanceMap[0];
+        if (Physics.Linecast(ai.position, player.position, heavyCoverMask) && distanceToPlayer > lowestViewDistance) {
             return false;
         }
 

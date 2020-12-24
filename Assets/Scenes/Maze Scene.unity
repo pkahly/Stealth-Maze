@@ -754,6 +754,11 @@ PrefabInstance:
       objectReference: {fileID: 1410752598}
     - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
         type: 3}
+      propertyPath: turnSpeed
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
+        type: 3}
       propertyPath: alarmSound
       value: 
       objectReference: {fileID: 1094302740}
@@ -762,6 +767,11 @@ PrefabInstance:
       propertyPath: attackSound
       value: 
       objectReference: {fileID: 1019238013}
+    - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
+        type: 3}
+      propertyPath: timeToLosePlayer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6465063226360021218, guid: 57e3e72466d8442e39a3b2eed876d419,
         type: 3}
       propertyPath: m_Name
