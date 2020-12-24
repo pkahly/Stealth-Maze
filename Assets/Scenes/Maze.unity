@@ -460,7 +460,7 @@ PrefabInstance:
     - target: {fileID: 4839021047609735552, guid: 5e9e851c0e142814dac026a256ba2ac0,
         type: 3}
       propertyPath: m_Intensity
-      value: 0.6
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7723217064254312073, guid: 5e9e851c0e142814dac026a256ba2ac0,
         type: 3}
@@ -749,6 +749,11 @@ PrefabInstance:
       objectReference: {fileID: 1094302740}
     - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
         type: 3}
+      propertyPath: numAIs
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
+        type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1410752598}
@@ -767,6 +772,16 @@ PrefabInstance:
       propertyPath: attackSound
       value: 
       objectReference: {fileID: 1019238013}
+    - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
+        type: 3}
+      propertyPath: attackDistance
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
+        type: 3}
+      propertyPath: aiAttackCooldown
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
         type: 3}
       propertyPath: timeToLosePlayer
@@ -845,6 +860,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7810626148191670764, guid: 5e473e1624061a40e80bbe33747ab3ff,
         type: 3}
+    - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
+        type: 3}
+      propertyPath: courtyardSize
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: rarePropChance

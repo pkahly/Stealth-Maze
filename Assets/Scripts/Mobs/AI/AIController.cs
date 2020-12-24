@@ -13,14 +13,19 @@ struct AIData {
     public float attackCooldown;
 }
 
+struct HuntingStage {
+    public float maxHuntTime;
+    public int huntDistance;
+}
+
 public class AIController : MonoBehaviour {
     public Transform player;
     [Range(1,20)]
     public int numAIs = 5;
     public Transform aiPrefab;
     public float turnSpeed = 180;
-    public float attackDistance = 8;
-    public float aiAttackCooldown = 5;
+    public float attackDistance = 10;
+    public float aiAttackCooldown = 1;
     public float timeToLosePlayer = 2;
     public AudioSource alarmSound;
     public AudioSource attackSound;
@@ -39,7 +44,7 @@ public class AIController : MonoBehaviour {
     private Dictionary<int, float> visibilityLevelToViewDistanceMap = new Dictionary<int, float>()
     {
         [5] = 100,
-        [4] = 40,
+        [4] = 60,
         [3] = 20,
         [2] = 10,
         [1] = 5,
@@ -103,6 +108,8 @@ public class AIController : MonoBehaviour {
     }
 
     IEnumerator Patrol() {
+        float waitTime = 0.1f;
+
         // Give AI's their initial orders
         for (int i = 0; i < numAIs; i++) {
             aiData[i].attackCooldown = 0;
@@ -125,7 +132,7 @@ public class AIController : MonoBehaviour {
                 }
 
                 // Update Patrol Path
-                if (Mathf.Abs(aiData[i].agent.velocity.x) < 1 && Mathf.Abs(aiData[i].agent.velocity.z) < 1) {
+                if (Mathf.Abs(aiData[i].agent.velocity.x) == 0 && Mathf.Abs(aiData[i].agent.velocity.z) == 0) {
                     aiData[i].patrolIndex += 1;
                     if (aiData[i].patrolIndex >= aiData[i].patrolPath.Length) {
                         aiData[i].patrolIndex = 0;
@@ -135,7 +142,7 @@ public class AIController : MonoBehaviour {
                 }
             }
 
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(waitTime);
         }
     }
 
@@ -190,48 +197,72 @@ public class AIController : MonoBehaviour {
             yield return new WaitForSeconds(waitTime);
         }
 
-        Debug.Log("Lost Player near " + lastSeenPosition);
         StartCoroutine(Hunt(lastSeenPosition));
     }
 
     IEnumerator Hunt(Vector3 lastSeenPosition) {
         float waitTime = 0.1f;
-        float huntTimer = 0;
-        float maxHuntTime = 60;
-        int huntDistance = 30;
+        Debug.Log("Hunting around " + lastSeenPosition);       
 
-        Debug.Log("Hunting around " + lastSeenPosition);
+        HuntingStage[] stages = new HuntingStage[4] {
+            new HuntingStage {
+                maxHuntTime = 10,
+                huntDistance = 10,
+            },
+            new HuntingStage {
+                maxHuntTime = 30,
+                huntDistance = 20,
+            },
+            new HuntingStage {
+                maxHuntTime = 60,
+                huntDistance = 60,
+            },
+            new HuntingStage {
+                maxHuntTime = 240,
+                huntDistance = 90,
+            },
+        };  
 
-        // Compute coordinates for hunting area
-        int minX = (int)Mathf.Max(0, lastSeenPosition.x - huntDistance);
-        int maxX = (int)Mathf.Min(xSize, lastSeenPosition.x + huntDistance);
-        int minZ = (int)Mathf.Max(0, lastSeenPosition.z - huntDistance);
-        int maxZ = (int)Mathf.Min(zSize, lastSeenPosition.z + huntDistance);
+        // Hunting has multiple stages
+        // Each stage has a time limit and a search distance
+        for (int stage = 0; stage < stages.Length; stage++) {
+            float maxHuntTime = stages[stage].maxHuntTime;
+            int huntDistance = stages[stage].huntDistance;
+            float huntTimer = 0;
 
-        // Look for player
-        while (huntTimer < maxHuntTime) {
-            for (int i = 0; i < numAIs; i++) {
-                aiData[i].spotLight.color = Color.yellow;
+            Debug.Log("Hunting Stage: " + stage + " - distance: " + huntDistance);
 
-                // Look for player
-                if (CanSeePlayer(aiData[i].transform)) {
-                    Debug.Log("Found Player at " + player.position);
-                    StartCoroutine(Attack(player.position));
-                    yield break;
+            // Compute coordinates for hunting area
+            int minX = (int)Mathf.Max(0, lastSeenPosition.x - huntDistance);
+            int maxX = (int)Mathf.Min(xSize, lastSeenPosition.x + huntDistance);
+            int minZ = (int)Mathf.Max(0, lastSeenPosition.z - huntDistance);
+            int maxZ = (int)Mathf.Min(zSize, lastSeenPosition.z + huntDistance);
+
+            // Search until the time limit of the current stage
+            while (huntTimer < maxHuntTime) {
+                for (int i = 0; i < numAIs; i++) {
+                    aiData[i].spotLight.color = Color.yellow;
+
+                    // Look for player
+                    if (CanSeePlayer(aiData[i].transform)) {
+                        Debug.Log("Found Player at " + player.position);
+                        StartCoroutine(Attack(player.position));
+                        yield break;
+                    }
+
+                    // Pick next search point
+                    if (Mathf.Abs(aiData[i].agent.velocity.x) < 1 && Mathf.Abs(aiData[i].agent.velocity.z) < 1) {
+                        int x = rand.Next(minX, maxX);
+                        int z = rand.Next(minZ, maxZ);
+
+                        Vector3 position = GetNavPosition(new Vector3(x, 0, z));
+                        aiData[i].agent.SetDestination(position);
+                    }
                 }
-
-                // Pick next search point
-                if (Mathf.Abs(aiData[i].agent.velocity.x) < 1 && Mathf.Abs(aiData[i].agent.velocity.z) < 1) {
-                    int x = rand.Next(minX, maxX);
-                    int z = rand.Next(minZ, maxZ);
-
-                    Vector3 position = GetNavPosition(new Vector3(x, 0, z));
-                    aiData[i].agent.SetDestination(position);
-                }
+                
+                huntTimer += waitTime;
+                yield return new WaitForSeconds(waitTime);
             }
-            
-            huntTimer += waitTime;
-            yield return new WaitForSeconds(waitTime);
         }
 
         Debug.Log("Giving up hunting");
