@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DayNightCycle : MonoBehaviour
 {
     public Light sun;
     public Material daySkybox;
     public Material nightSkybox;
+    public Text clockText;
     public float daytimeIntensity = 2.5f;
 
     private int hour;
@@ -19,8 +21,8 @@ public class DayNightCycle : MonoBehaviour
 
     void Start()
     {
-        hour = 7;
-        minute = 55;
+        hour = 0;
+        minute = 0;
         isDaytime = false;
 
         StartCoroutine(TrackTimeOfDay());
@@ -51,8 +53,14 @@ public class DayNightCycle : MonoBehaviour
                 RenderSettings.skybox = nightSkybox;
             }
 
-            Debug.Log(hour + ":" + minute);
+            // Update overlay
+            clockText.text = hour + ":" + minute;
+
             yield return new WaitForSeconds(realSecondsToGameMinute);
         }
+    }
+
+    public bool IsDaytime() {
+        return isDaytime;
     }
 }
