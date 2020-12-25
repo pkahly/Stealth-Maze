@@ -25,7 +25,7 @@ public class AIController : MonoBehaviour {
     public Transform aiPrefab;
     public float turnSpeed = 180;
     public float attackDistance = 10;
-    public float aiAttackCooldown = 1;
+    public float aiAttackCooldown = 4;
     public float timeToLosePlayer = 2;
     public AudioSource alarmSound;
     public AudioSource attackSound;
@@ -156,6 +156,9 @@ public class AIController : MonoBehaviour {
         while (visibleTimer < timeToLosePlayer) {
             canSeePlayer = false;
             for (int i = 0; i < numAIs; i++) {
+                aiData[i].spotLight.color = Color.red;
+                aiData[i].attackCooldown -= waitTime;
+
                 // Check if anyone can see the player
                 if (!canSeePlayer) {
                     canSeePlayer = CanSeePlayer(aiData[i].transform);
@@ -163,8 +166,6 @@ public class AIController : MonoBehaviour {
 
                 // Attack if close enough
                 if (Vector3.Distance(aiData[i].transform.position, lastSeenPosition) <= attackDistance) {
-                    aiData[i].spotLight.color = Color.red;
-                    
                     // Stop and face player
                     aiData[i].agent.SetDestination(aiData[i].transform.position);
                     StartCoroutine(TurnToFace(aiData[i].transform, lastSeenPosition));
@@ -182,7 +183,6 @@ public class AIController : MonoBehaviour {
                 // Otherwise move closer
                 else {
                     aiData[i].agent.SetDestination(lastSeenPosition);
-                    aiData[i].attackCooldown -= waitTime;
                 }
             }
 

@@ -22,9 +22,9 @@ public class WorldRenderer : MonoBehaviour
     public int grassPropChance = 3;
 
     // Size of Maze Array
-    [Range(10, 100)]
+    [Range(5, 100)]
     public int mazeXLength = 50;
-    [Range(10, 100)]
+    [Range(5, 100)]
     public int mazeZLength = 50;
     [Range(0, 5)]
     public int courtyardSize = 4;

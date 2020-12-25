@@ -780,7 +780,7 @@ PrefabInstance:
     - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
         type: 3}
       propertyPath: aiAttackCooldown
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
         type: 3}
@@ -873,7 +873,7 @@ PrefabInstance:
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: grassPropChance
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
