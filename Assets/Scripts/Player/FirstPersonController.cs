@@ -38,11 +38,29 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_StepCycle;
         private float m_NextStep;
         private AudioSource m_AudioSource;
+        private float spawnXPos = 0;
+        private float spawnZPos = 0;
+
+        public void SetSpawnPoint(float xSize, float zSize) {     
+            this.spawnXPos = xSize;
+            this.spawnZPos = zSize;
+        }
 
         // Use this for initialization
         private void Start()
         {
+            if (spawnXPos <= 0 || spawnZPos <= 0) {
+                throw new ArgumentException("Call SetSpawnArea First");
+            }
+
             m_CharacterController = GetComponent<CharacterController>();
+
+            // Set spawn position
+            m_CharacterController.enabled = false;
+            m_CharacterController.transform.position = new Vector3(spawnXPos, 20, spawnZPos);
+            m_CharacterController.enabled = true;
+            Debug.Log("Spawning player at " + m_CharacterController.transform.position);
+
             m_Camera = Camera.main;
             m_OriginalCameraPosition = m_Camera.transform.localPosition;
             m_FovKick.Setup(m_Camera);

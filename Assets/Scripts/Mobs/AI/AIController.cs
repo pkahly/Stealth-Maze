@@ -20,7 +20,7 @@ struct HuntingStage {
 
 public class AIController : MonoBehaviour {
     public Transform player;
-    [Range(1,20)]
+    [Range(1,50)]
     public int numAIs = 5;
     public Transform aiPrefab;
     public float turnSpeed = 180;
@@ -101,7 +101,15 @@ public class AIController : MonoBehaviour {
     Vector3[] GetPatrolPath() {
         Vector3[] patrolPath = new Vector3[patrolPathSize];
         for (int i = 0; i < patrolPathSize; i++) {
-            patrolPath[i] = GetNavPosition(new Vector3(rand.Next(xSize), 0, rand.Next(zSize)));
+            // Generate random patrol point, with retries
+            for (int retries = 0; retries < 10; retries++) {
+                try {
+                    patrolPath[i] = GetNavPosition(new Vector3(rand.Next(xSize), 0, rand.Next(zSize)));
+                    break;
+                } catch (ArgumentException ex) {
+                    Debug.Log(ex);
+                }
+            }
         }
 
         return patrolPath;
@@ -117,7 +125,6 @@ public class AIController : MonoBehaviour {
             aiData[i].agent.SetDestination(aiData[i].patrolPath[aiData[i].patrolIndex]);
         }
 
-        Debug.Log("Started Patrolling");
         alarmSound.Stop();
         yield return new WaitForSeconds(1);
 
@@ -126,7 +133,6 @@ public class AIController : MonoBehaviour {
             for (int i = 0; i < numAIs; i++) {
                 // Look for player
                 if (CanSeePlayer(aiData[i].transform)) {
-                    Debug.Log("Found Player at " + player.position);
                     StartCoroutine(Attack(player.position));
                     yield break;
                 }
@@ -202,7 +208,6 @@ public class AIController : MonoBehaviour {
 
     IEnumerator Hunt(Vector3 lastSeenPosition) {
         float waitTime = 0.1f;
-        Debug.Log("Hunting around " + lastSeenPosition);       
 
         HuntingStage[] stages = new HuntingStage[4] {
             new HuntingStage {
@@ -230,8 +235,6 @@ public class AIController : MonoBehaviour {
             int huntDistance = stages[stage].huntDistance;
             float huntTimer = 0;
 
-            Debug.Log("Hunting Stage: " + stage + " - distance: " + huntDistance);
-
             // Compute coordinates for hunting area
             int minX = (int)Mathf.Max(0, lastSeenPosition.x - huntDistance);
             int maxX = (int)Mathf.Min(xSize, lastSeenPosition.x + huntDistance);
@@ -245,7 +248,6 @@ public class AIController : MonoBehaviour {
 
                     // Look for player
                     if (CanSeePlayer(aiData[i].transform)) {
-                        Debug.Log("Found Player at " + player.position);
                         StartCoroutine(Attack(player.position));
                         yield break;
                     }
@@ -265,7 +267,6 @@ public class AIController : MonoBehaviour {
             }
         }
 
-        Debug.Log("Giving up hunting");
         StartCoroutine(Patrol());
     }
 
@@ -285,8 +286,8 @@ public class AIController : MonoBehaviour {
         } 
 
         // Line of Sight not blocked by heavy cover
-        // Treat this the same as visibility level 0
-        float lowestViewDistance = visibilityLevelToViewDistanceMap[0];
+        // Treat this the same as the lowest visibility for this time of day
+        float lowestViewDistance = visibilityLevelToViewDistanceMap[playerStats.GetObscuredVisibility()];
         if (Physics.Linecast(ai.position, player.position, heavyCoverMask) && distanceToPlayer > lowestViewDistance) {
             return false;
         }

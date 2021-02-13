@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 
 class WorldGenerator {
@@ -42,9 +43,16 @@ class WorldGenerator {
         ApplyMazeToWorld(world, maze);
 
         // Add Finish Zone
-        AddFinishZone(world, rand.Next(mazeXLength), rand.Next(mazeZLength));
+        AddFinishZone(world, GetRandomPosition());
     
         return world;
+    }
+
+    public Vector3 GetRandomPosition() {
+        int xPos = rand.Next(mazeXLength) * 2 + 1;
+        int zPos = rand.Next(mazeZLength) * 2 + 1;
+
+        return new Vector3(xPos, 0, zPos);
     }
 
     private void ApplyMazeToWorld(WorldSpace[,] world, MazeCell[,] maze) {
@@ -98,11 +106,8 @@ class WorldGenerator {
         }
     }
 
-    public void AddFinishZone(WorldSpace[,] world, int mazeX, int mazeZ) {
-        int worldX = mazeX * 2 + 1;
-        int worldZ = mazeZ * 2 + 1;
-
-        world[worldX, worldZ].type = WorldSpace.Type.finish;
+    public void AddFinishZone(WorldSpace[,] world, Vector3 pos) {
+        world[(int)pos.x, (int)pos.z].type = WorldSpace.Type.finish;
     }
 
     public int getXLength() {

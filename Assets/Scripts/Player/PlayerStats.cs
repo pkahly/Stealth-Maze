@@ -28,6 +28,24 @@ class PlayerStats: MonoBehaviour {
         StartCoroutine(RefillHealth());
     }
 
+    /*
+    +------------+--------------+-----------+-------+
+    | visibility | stand/crouch | day/night | cover |
+    +------------+--------------+-----------+-------+
+    |          5 | stand        | day       | open  |
+    |          4 | crouch       | day       | open  |
+    |          4 | stand        | day       | light |
+    |          3 | crouch       | day       | light |
+    |          3 | stand        | day       | heavy |
+    |          2 | crouch       | day       | heavy |
+    |          3 | stand        | night     | open  |
+    |          2 | crouch       | night     | open  |
+    |          2 | stand        | night     | light |
+    |          1 | crouch       | night     | light |
+    |          1 | stand        | night     | heavy |
+    |          0 | crouch       | night     | heavy |
+    +------------+--------------+-----------+-------+
+    */
     IEnumerator DetectVisibility() {
         while (true) {
             Vector3 center = new Vector3(transform.position.x, 0, transform.position.z);
@@ -70,6 +88,15 @@ class PlayerStats: MonoBehaviour {
 
     public int GetVisibility() {
         return visibilityLevel;
+    }
+
+    // The visibility to use if the AI's vision is blocked by heavy cover
+    public int GetObscuredVisibility() {
+        if (dayNightScript.IsDaytime()) {
+            return 2;
+        } else {
+            return 0;
+        }
     }
 
     public void TakeDamage(int damage) {

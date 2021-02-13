@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using FirstPersonController = UnityStandardAssets.Characters.FirstPerson.FirstPersonController;
 
 public class WorldRenderer : MonoBehaviour
 {
@@ -30,10 +31,11 @@ public class WorldRenderer : MonoBehaviour
     public int courtyardSize = 4;
 
     // Amplify the x,z values by this much
-    [Range(1, 20)]
+    [Range(1, 30)]
     public int size = 1;
 
     public AIController aIController;
+    public FirstPersonController player;
     private WorldGenerator generator;
     
     void Start() {
@@ -52,6 +54,10 @@ public class WorldRenderer : MonoBehaviour
         int unityXSize = generator.getXLength() * size; 
         int unityZSize = generator.getZLength() * size;
         aIController.SetSpawnArea(unityXSize, unityZSize);
+
+        // Set player spawn point
+        Vector3 spawnPos = generator.GetRandomPosition();
+        player.SetSpawnPoint(spawnPos.x * size, spawnPos.z * size);
     }
 
     private void Draw(WorldSpace[,] world) {

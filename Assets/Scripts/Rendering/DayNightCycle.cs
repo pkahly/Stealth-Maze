@@ -17,7 +17,7 @@ public class DayNightCycle : MonoBehaviour
 
     private int sunrise = 8;
     private int sunset = 20;
-    private int realSecondsToGameMinute = 6;
+    private int realSecondsToGameMinute = 1;
 
     void Start()
     {
