@@ -6,6 +6,7 @@ class WorldSpace {
         floor = 0,
         wall = 1,
         finish = 2,
+        ground = 3,
     }
 
     public Type type;

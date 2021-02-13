@@ -9,7 +9,8 @@ public class DayNightCycle : MonoBehaviour
     public Material daySkybox;
     public Material nightSkybox;
     public Text clockText;
-    public float daytimeIntensity = 2.5f;
+    public float daytimeIntensity = 1.5f;
+    public float nightimeIntensity = 0.05f;
 
     private int hour;
     private int minute;
@@ -17,7 +18,7 @@ public class DayNightCycle : MonoBehaviour
 
     private int sunrise = 8;
     private int sunset = 20;
-    private int realSecondsToGameMinute = 1;
+    private float realSecondsToGameMinute = 1f;
 
     void Start()
     {
@@ -49,8 +50,15 @@ public class DayNightCycle : MonoBehaviour
                 RenderSettings.skybox = daySkybox;
             } else if ((hour >= sunset || hour < sunrise) && isDaytime) {
                 isDaytime = false;
-                sun.intensity = 0;
+                sun.intensity = nightimeIntensity;
                 RenderSettings.skybox = nightSkybox;
+            }
+
+            // If we are near the boundry, use LERP
+            if (isDaytime && Mathf.Abs(sunset - hour) <= 1) {
+                sun.intensity = Mathf.Lerp(daytimeIntensity, nightimeIntensity, (minute / 60.0f));
+            } else if (!isDaytime && Mathf.Abs(sunrise - hour) <= 1) {
+                sun.intensity = Mathf.Lerp(nightimeIntensity, daytimeIntensity, (minute / 60.0f));
             }
 
             // Update overlay

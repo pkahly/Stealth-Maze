@@ -17,7 +17,10 @@ public struct Neighbour
 public static class MazeGenerator {
     private static System.Random rand = new System.Random();
 
-    public static MazeCell[,] Generate(int width, int height, int courtyardSize = 0) {
+    public static MazeCell[,] Generate(MazeSpec mazeSpec) {
+        int width = mazeSpec.mazeXLength;
+        int height = mazeSpec.mazeZLength;
+
         // Create Maze with all walls intact
         MazeCell[,] maze = new MazeCell[width, height];
 
@@ -28,10 +31,27 @@ public static class MazeGenerator {
         }
 
         // Add a courtyard by marking the nodes visited and remove the interior walls
-        AddCourtyard(maze, width, height, courtyardSize);
+        AddCourtyard(maze, width, height, mazeSpec.courtyardSize);
         
         // Generate maze
         maze = ApplyRecursiveBacktracker(maze, width, height);
+
+        // Add exit(s)
+        for (int i = 0; i < mazeSpec.numExits; i++) {
+            int randX = rand.Next(0, width);
+            int randY = rand.Next(0, height);
+
+            Wall wall = (Wall)rand.Next(0, 4); // Walls are 0-3
+            if (wall == Wall.UP) {
+                maze[randX, height - 1].removeWall(wall);
+            } else if (wall == Wall.DOWN) {
+                maze[randX, 0].removeWall(wall);
+            } else if (wall == Wall.RIGHT) {
+                maze[width - 1, randY].removeWall(wall);
+            } else { // wall == Wall.LEFT
+                maze[0, randY].removeWall(wall);
+            }
+        }
         
         return maze;
     }

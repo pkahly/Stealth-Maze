@@ -13,6 +13,7 @@ public class WorldRenderer : MonoBehaviour
     public Transform wallPrefab = null;
     public Transform brickFloorPrefab = null;
     public Transform finishPrefab = null;
+    public Transform groundPrefab = null;
     
     // Props
     public Transform[] rarePropPrefabs = null;
@@ -22,13 +23,12 @@ public class WorldRenderer : MonoBehaviour
     [Range(0, 50)]
     public int grassPropChance = 3;
 
-    // Size of Maze Array
-    [Range(5, 100)]
-    public int mazeXLength = 50;
-    [Range(5, 100)]
-    public int mazeZLength = 50;
-    [Range(0, 5)]
-    public int courtyardSize = 4;
+    // Maze parameters
+    public MazeSpec[] mazeSpecs;
+    [Min(20)]
+    public int totalMazesXLength;
+    [Min(20)]
+    public int totalMazesZLength;
 
     // Amplify the x,z values by this much
     [Range(1, 30)]
@@ -40,8 +40,8 @@ public class WorldRenderer : MonoBehaviour
     
     void Start() {
         // Generate World
-        generator = new WorldGenerator(mazeXLength, mazeZLength, courtyardSize);
-        var world = generator.GenerateWorld();
+        generator = new WorldGenerator(totalMazesXLength, totalMazesZLength);
+        var world = generator.GenerateWorld(mazeSpecs);
 
         // Render World
         Draw(world);
@@ -56,7 +56,7 @@ public class WorldRenderer : MonoBehaviour
         aIController.SetSpawnArea(unityXSize, unityZSize);
 
         // Set player spawn point
-        Vector3 spawnPos = generator.GetRandomPosition();
+        Vector3 spawnPos = generator.GetRandomPosition(mazeSpecs[0]);
         player.SetSpawnPoint(spawnPos.x * size, spawnPos.z * size);
     }
 
@@ -88,6 +88,13 @@ public class WorldRenderer : MonoBehaviour
                         PlaceRandomProp(unityX, unityZ, rarePropPrefabs);
                     }
 
+                } else if (space.type == WorldSpace.Type.ground) {
+                    DrawSpaceAndScale(unityX, 0, unityZ, groundPrefab);
+
+                    // Randomly place grass prop
+                    if (rand.Next(grassPropChance) == 0) {
+                        PlaceRandomProp(unityX, unityZ, grassPropPrefabs);
+                    }
                 } else if (space.type == WorldSpace.Type.wall) {
                     DrawSpaceAndScale(unityX, 5, unityZ, wallPrefab);
                 } else if (space.type == WorldSpace.Type.finish) {

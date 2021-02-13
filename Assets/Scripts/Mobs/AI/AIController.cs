@@ -102,7 +102,7 @@ public class AIController : MonoBehaviour {
         Vector3[] patrolPath = new Vector3[patrolPathSize];
         for (int i = 0; i < patrolPathSize; i++) {
             // Generate random patrol point, with retries
-            for (int retries = 0; retries < 10; retries++) {
+            for (int retries = 0; retries < 20; retries++) {
                 try {
                     patrolPath[i] = GetNavPosition(new Vector3(rand.Next(xSize), 0, rand.Next(zSize)));
                     break;
@@ -254,17 +254,27 @@ public class AIController : MonoBehaviour {
 
                     // Pick next search point
                     if (Mathf.Abs(aiData[i].agent.velocity.x) < 1 && Mathf.Abs(aiData[i].agent.velocity.z) < 1) {
-                        int x = rand.Next(minX, maxX);
-                        int z = rand.Next(minZ, maxZ);
+                        for (int retries = 0; retries < 10; retries++) {
+                            int x = rand.Next(minX, maxX);
+                            int z = rand.Next(minZ, maxZ);
 
-                        Vector3 position = GetNavPosition(new Vector3(x, 0, z));
-                        aiData[i].agent.SetDestination(position);
+                            try {
+                                Vector3 position = GetNavPosition(new Vector3(x, 0, z));
+                                aiData[i].agent.SetDestination(position);
+                                break;
+                            } catch(ArgumentException ex) {
+                                Debug.Log(ex);
+                            }
+                        }
                     }
                 }
                 
                 huntTimer += waitTime;
                 yield return new WaitForSeconds(waitTime);
             }
+
+            // Stop the alarm after the first stage of hunting
+            alarmSound.Stop();
         }
 
         StartCoroutine(Patrol());
