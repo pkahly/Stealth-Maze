@@ -34,8 +34,12 @@ public class AIController : MonoBehaviour {
     private static System.Random rand = new System.Random();
 
     private AIData[] aiData;
-    private int xSize;
-    private int zSize;
+    private int spawnXSize;
+    private int spawnZSize;
+    private int startX;
+    private int startZ;
+    private int totalXSize;
+    private int totalZSize;
     private int patrolPathSize = 6;
     private PlayerStats playerStats;
     private LayerMask obstacleMask;
@@ -51,15 +55,26 @@ public class AIController : MonoBehaviour {
         [0] = 2,
     };
 
-    public void SetSpawnArea(int xSize, int zSize) {     
+    public void SetSpawnArea(int spawnXSize, int spawnZSize) {     
         aiData = new AIData[numAIs];
-        this.xSize = xSize;
-        this.zSize = zSize;
+        this.spawnXSize = spawnXSize;
+        this.spawnZSize = spawnZSize;
+    }
+
+    public void SetTotalArea(int startX, int startZ, int totalXSize, int totalZSize) {     
+        aiData = new AIData[numAIs];
+        this.startX = startX;
+        this.startZ = startZ;
+        this.totalXSize = totalXSize;
+        this.totalZSize = totalZSize;
     }
 
     public void Start() {
-        if (xSize <= 0 || zSize <= 0) {
+        if (spawnXSize <= 0 || spawnZSize <= 0) {
             throw new ArgumentException("Call SetSpawnArea First");
+        }
+        if (totalXSize <= 0 || totalZSize <= 0) {
+            throw new ArgumentException("Call SetTotalArea First");
         }
 
         obstacleMask = LayerMask.GetMask("Obstacle");
@@ -104,7 +119,7 @@ public class AIController : MonoBehaviour {
             // Generate random patrol point, with retries
             for (int retries = 0; retries < 20; retries++) {
                 try {
-                    patrolPath[i] = GetNavPosition(new Vector3(rand.Next(xSize), 0, rand.Next(zSize)));
+                    patrolPath[i] = GetNavPosition(new Vector3(rand.Next(spawnXSize), 0, rand.Next(spawnZSize)));
                     break;
                 } catch (ArgumentException ex) {
                     Debug.Log(ex);
@@ -216,15 +231,15 @@ public class AIController : MonoBehaviour {
             },
             new HuntingStage {
                 maxHuntTime = 30,
-                huntDistance = 20,
+                huntDistance = 40,
             },
             new HuntingStage {
                 maxHuntTime = 60,
-                huntDistance = 60,
+                huntDistance = 80,
             },
             new HuntingStage {
                 maxHuntTime = 240,
-                huntDistance = 90,
+                huntDistance = 200,
             },
         };  
 
@@ -236,10 +251,10 @@ public class AIController : MonoBehaviour {
             float huntTimer = 0;
 
             // Compute coordinates for hunting area
-            int minX = (int)Mathf.Max(0, lastSeenPosition.x - huntDistance);
-            int maxX = (int)Mathf.Min(xSize, lastSeenPosition.x + huntDistance);
-            int minZ = (int)Mathf.Max(0, lastSeenPosition.z - huntDistance);
-            int maxZ = (int)Mathf.Min(zSize, lastSeenPosition.z + huntDistance);
+            int minX = (int)Mathf.Max(startX, lastSeenPosition.x - huntDistance);
+            int maxX = (int)Mathf.Min(totalXSize, lastSeenPosition.x + huntDistance);
+            int minZ = (int)Mathf.Max(startZ, lastSeenPosition.z - huntDistance);
+            int maxZ = (int)Mathf.Min(totalZSize, lastSeenPosition.z + huntDistance);
 
             // Search until the time limit of the current stage
             while (huntTimer < maxHuntTime) {

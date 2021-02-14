@@ -198,12 +198,12 @@ PrefabInstance:
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: numExits
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: mazeStartX
-      value: 15
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
@@ -213,12 +213,12 @@ PrefabInstance:
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: mazeXLength
-      value: 9
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: mazeZLength
-      value: 9
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631755, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
@@ -375,27 +375,32 @@ PrefabInstance:
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: numExits
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: mazeStartX
-      value: 15
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: mazeStartZ
-      value: 15
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: mazeXLength
-      value: 9
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: mazeZLength
-      value: 9
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
+        type: 3}
+      propertyPath: courtyardSize
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631755, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
@@ -698,7 +703,7 @@ PrefabInstance:
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: numExits
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
@@ -708,17 +713,17 @@ PrefabInstance:
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: mazeStartZ
-      value: 15
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: mazeXLength
-      value: 9
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: mazeZLength
-      value: 9
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631755, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
@@ -820,7 +825,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -969,7 +974,7 @@ PrefabInstance:
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: numExits
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
@@ -984,17 +989,17 @@ PrefabInstance:
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: mazeXLength
-      value: 9
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: mazeZLength
-      value: 9
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: courtyardSize
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631755, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
@@ -1024,6 +1029,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Overlay
+      objectReference: {fileID: 0}
+    - target: {fileID: 5860998860527684312, guid: 11bb18d9ed9b3ed48be56fe745e37427,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5860998860527684316, guid: 11bb18d9ed9b3ed48be56fe745e37427,
         type: 3}
@@ -1272,7 +1282,7 @@ PrefabInstance:
     - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
         type: 3}
       propertyPath: numAIs
-      value: 30
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
         type: 3}
@@ -1421,7 +1431,7 @@ PrefabInstance:
     - target: {fileID: 7124448149911230351, guid: 5bf89fcc1b90102e4a14a7c905a21991,
         type: 3}
       propertyPath: m_Shadows.m_Type
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7124448149911230351, guid: 5bf89fcc1b90102e4a14a7c905a21991,
         type: 3}
@@ -1513,6 +1523,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
+      propertyPath: wildernessWidth
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
+        type: 3}
       propertyPath: brickFloorPrefab
       value: 
       objectReference: {fileID: 964858962113103349, guid: a87fa691544ad79b8932061eaf86695b,
@@ -1525,13 +1540,19 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
+      propertyPath: wildernessPrefab
+      value: 
+      objectReference: {fileID: 1436579014881669905, guid: 6e020406e6300d538b4c8db3f227f51e,
+        type: 3}
+    - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
+        type: 3}
       propertyPath: totalMazesXLength
-      value: 25
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: totalMazesZLength
-      value: 25
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
@@ -1716,7 +1737,7 @@ PrefabInstance:
     - target: {fileID: 7390512283814829267, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829267, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}

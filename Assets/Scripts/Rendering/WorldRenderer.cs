@@ -14,6 +14,7 @@ public class WorldRenderer : MonoBehaviour
     public Transform brickFloorPrefab = null;
     public Transform finishPrefab = null;
     public Transform groundPrefab = null;
+    public Transform wildernessPrefab = null;
     
     // Props
     public Transform[] rarePropPrefabs = null;
@@ -25,10 +26,12 @@ public class WorldRenderer : MonoBehaviour
 
     // Maze parameters
     public MazeSpec[] mazeSpecs;
-    [Min(20)]
+    [Min(10)]
     public int totalMazesXLength;
-    [Min(20)]
+    [Min(10)]
     public int totalMazesZLength;
+    [Min(1)]
+    public int wildernessWidth;
 
     // Amplify the x,z values by this much
     [Range(1, 30)]
@@ -46,14 +49,18 @@ public class WorldRenderer : MonoBehaviour
         // Render World
         Draw(world);
 
+        // Generate Wilderness area around the edges
+        int unityXSize = generator.getXLength() * size; 
+        int unityZSize = generator.getZLength() * size;
+        DrawWilderness(unityXSize, unityZSize, wildernessWidth * size);
+
         // Bake NavMesh (Requires NaveMeshComponents package)
         NavMeshSurface nm = GameObject.FindObjectOfType<NavMeshSurface>();
         nm.BuildNavMesh();
 
         // Spawn AIs
-        int unityXSize = generator.getXLength() * size; 
-        int unityZSize = generator.getZLength() * size;
         aIController.SetSpawnArea(unityXSize, unityZSize);
+        aIController.SetTotalArea(-wildernessWidth, -wildernessWidth, unityXSize + wildernessWidth, unityZSize + wildernessWidth);
 
         // Set player spawn point
         Vector3 spawnPos = generator.GetRandomPosition(mazeSpecs[0]);
@@ -105,15 +112,57 @@ public class WorldRenderer : MonoBehaviour
 
     }
 
-    private void PlaceRandomProp(int unityX, int unityZ, Transform[] propPrefabs) {
+    private void DrawWilderness(int unityXSize, int unityZSize, int wildernessWidth) {
+        float offset = size / 2.0f;
+        float topX = wildernessWidth + unityXSize - offset;
+        float topZ = wildernessWidth + unityZSize - offset;
+        float bottomX = -(wildernessWidth + offset);
+        float bottomZ = -(wildernessWidth + offset);
+
+        // Bottom
+        DrawPlane(new Vector3(-offset, 0, -offset), new Vector3(topX, 0, bottomZ), wildernessPrefab);
+
+        // Top
+        DrawPlane(new Vector3(-offset, 0, unityZSize - offset), new Vector3(topX, 0, topZ), wildernessPrefab);
+
+        // Left
+        DrawPlane(new Vector3(bottomX, 0, bottomZ), new Vector3(-offset, 0, topZ), wildernessPrefab);
+
+        // Left
+        DrawPlane(new Vector3(unityXSize - offset, 0, -offset), new Vector3(topX, 0, unityZSize), wildernessPrefab);
+
+        // Randomly place grass props
+        for (float x = bottomX + offset; x < topX; x += offset) {
+            for (float z = bottomZ + offset; z < topZ; z += offset) {
+                // Skip interior
+                if (x >= 0 && x <= unityXSize && z >= 0 && z <= unityZSize) {
+                    continue;
+                }
+
+                PlaceRandomProp(x, z, grassPropPrefabs);
+            }
+        }
+    }
+
+    private void DrawPlane(Vector3 startPoint, Vector3 endPoint, Transform prefab) {
+        Vector3 between = endPoint - startPoint;
+        float xDistance = between.x;
+        float zDistance = between.z;
+
+        var obj = DrawObj(startPoint.x, 0, startPoint.z, prefab);
+        obj.localScale = new Vector3(obj.localScale.x * xDistance, obj.localScale.z, obj.localScale.z * zDistance);
+        obj.position = startPoint + (between * 0.5f);
+    }
+
+    private void PlaceRandomProp(float unityX, float unityZ, Transform[] propPrefabs) {
         if (propPrefabs != null && propPrefabs.Length > 0) {
             // Pick random prop
             var prop = propPrefabs[rand.Next(propPrefabs.Length)];
 
             // Pick random place inside plane
             int radius = size / 2;
-            int propX = rand.Next(unityX - radius, unityX + radius);
-            int propZ = rand.Next(unityZ - radius, unityZ + radius);
+            int propX = rand.Next((int)unityX - radius, (int)unityX + radius);
+            int propZ = rand.Next((int)unityZ - radius, (int)unityZ + radius);
 
             // Draw
             DrawObj(propX, 0, propZ, prop);
@@ -134,7 +183,7 @@ public class WorldRenderer : MonoBehaviour
         }
     }
 
-    private Transform DrawObj(int unityX, int yOffset, int unityZ, Transform prefab) {
+    private Transform DrawObj(float unityX, int yOffset, float unityZ, Transform prefab) {
         // Create new instance of prefab
         var obj = Instantiate(prefab, transform) as Transform;
 
