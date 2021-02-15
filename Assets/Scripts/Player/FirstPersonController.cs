@@ -40,10 +40,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private AudioSource m_AudioSource;
         private float spawnXPos = 0;
         private float spawnZPos = 0;
+        private bool isEnabled = true;
 
         public void SetSpawnPoint(float xSize, float zSize) {     
             this.spawnXPos = xSize;
             this.spawnZPos = zSize;
+        }
+
+        public void SetEnabled(bool isEnabled) {
+            this.isEnabled = isEnabled;
         }
 
         // Use this for initialization
@@ -68,8 +73,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
 
         // Update is called once per frame
-        private void Update()
-        {
+        private void Update() {
+            if (!isEnabled) {
+                return;
+            }
+
             RotateView();
 
             if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
@@ -86,16 +94,18 @@ namespace UnityStandardAssets.Characters.FirstPerson
         }
 
 
-        private void PlayLandingSound()
-        {
+        private void PlayLandingSound() {
             m_AudioSource.clip = m_LandSound;
             m_AudioSource.Play();
             m_NextStep = m_StepCycle + .5f;
         }
 
 
-        private void FixedUpdate()
-        {
+        private void FixedUpdate() {
+            if (!isEnabled) {
+                return;
+            }
+            
             float speed;
             GetInput(out speed);
             // always move along the camera forward as it is the direction that it being aimed at

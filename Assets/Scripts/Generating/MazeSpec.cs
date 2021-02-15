@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[System.Serializable]
 public class MazeSpec : MonoBehaviour {
     [Min(0)]
     public int mazeStartX = 0;

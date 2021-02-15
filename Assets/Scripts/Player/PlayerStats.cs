@@ -82,7 +82,7 @@ class PlayerStats: MonoBehaviour {
 
     IEnumerator RefillHealth() {
         while(true) {
-            if (food > 50) {
+            if (health < 100 && food > 50) {
                 // Only refill health if food is above 50
                 // Reduce food by the same amount
                 health = Mathf.Min(100, health + 5);
