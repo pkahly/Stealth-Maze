@@ -15,6 +15,7 @@ class PlayerStats: MonoBehaviour {
     private LayerMask heavyCoverMask;
     private int visibilityLevel;
     private DayNightCycle dayNightScript;
+    private List<InventoryItem> inventory = new List<InventoryItem>();
 
     // Stats
     private int health = 100;
@@ -29,6 +30,13 @@ class PlayerStats: MonoBehaviour {
         StartCoroutine(DetectVisibility());
         StartCoroutine(RefillHealth());
         StartCoroutine(Hunger());
+
+        // TODO remove
+        inventory.Add(new InventoryItem("Apple"));
+        inventory.Add(new InventoryItem("Axe"));
+        inventory.Add(new InventoryItem("Bottle"));
+        inventory.Add(new InventoryItem("Rock"));
+        inventory.Add(new InventoryItem("Trap"));
     }
 
     /*
@@ -142,6 +150,10 @@ class PlayerStats: MonoBehaviour {
         if (health <= 0) {
             SceneManager.LoadScene("GameLose");
         }
+    }
+
+    public List<InventoryItem> GetInventory() {
+        return inventory;
     }
 
     void OnTriggerEnter(Collider hitCollider) {
