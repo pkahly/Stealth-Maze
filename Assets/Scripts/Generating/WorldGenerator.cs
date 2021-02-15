@@ -48,8 +48,8 @@ class WorldGenerator {
             // Add Maze to the World
             ApplyMazeToWorld(world, mazeSpec, maze);
 
-            // TODO Add Finish Zone?
-            //AddFinishZone(world, GetRandomPosition(mazeSpec));
+            // Add Finish Zone
+            AddFinishZone(world, GetRandomPosition(mazeSpec));
         }
     
         return world;

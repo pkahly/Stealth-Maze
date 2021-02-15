@@ -227,19 +227,19 @@ public class AIController : MonoBehaviour {
         HuntingStage[] stages = new HuntingStage[4] {
             new HuntingStage {
                 maxHuntTime = 10,
-                huntDistance = 10,
+                huntDistance = (spawnXSize / 10),
             },
             new HuntingStage {
                 maxHuntTime = 30,
-                huntDistance = 40,
+                huntDistance = (spawnXSize / 2),
             },
             new HuntingStage {
                 maxHuntTime = 60,
-                huntDistance = 80,
+                huntDistance = spawnXSize,
             },
             new HuntingStage {
                 maxHuntTime = 240,
-                huntDistance = 200,
+                huntDistance = totalXSize,
             },
         };  
 

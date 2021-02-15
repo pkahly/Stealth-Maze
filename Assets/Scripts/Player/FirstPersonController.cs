@@ -243,11 +243,5 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
         }
-
-    void OnTriggerEnter(Collider hitCollider) {
-        if (hitCollider.tag == "Finish") {
-            SceneManager.LoadScene("GameWin");
-        }
-    }
     }
 }

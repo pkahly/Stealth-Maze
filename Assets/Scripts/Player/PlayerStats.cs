@@ -8,6 +8,7 @@ class PlayerStats: MonoBehaviour {
     // UI Overlay
     [SerializeField] private Text visibilityText;
     [SerializeField] private Text healthText;
+    [SerializeField] private Text foodText;
 
     // Visibility
     private LayerMask lightCoverMask;
@@ -15,8 +16,9 @@ class PlayerStats: MonoBehaviour {
     private int visibilityLevel;
     private DayNightCycle dayNightScript;
 
-    // Health
+    // Stats
     private int health = 100;
+    private int food = 100;
 
     public void Start() {
         lightCoverMask = LayerMask.GetMask("Cover");
@@ -26,6 +28,7 @@ class PlayerStats: MonoBehaviour {
 
         StartCoroutine(DetectVisibility());
         StartCoroutine(RefillHealth());
+        StartCoroutine(Hunger());
     }
 
     /*
@@ -79,10 +82,43 @@ class PlayerStats: MonoBehaviour {
 
     IEnumerator RefillHealth() {
         while(true) {
-            health = Mathf.Min(100, health + 5);
-            healthText.text = "Health: " + health;
+            if (food > 50) {
+                // Only refill health if food is above 50
+                // Reduce food by the same amount
+                health = Mathf.Min(100, health + 5);
+                food = Mathf.Max(0, food - 5);
+            } else if (food <= 0) {
+                // Starvation
+                health = Mathf.Max(0, health - 5);
 
+                if (health <= 0) {
+                    SceneManager.LoadScene("GameLose");
+                }
+            }
+
+            if (health <= 50) {
+                healthText.color = Color.red;
+            }
+
+            healthText.text = "Health: " + health;
+            foodText.text = "Food: " + food;
             yield return new WaitForSeconds(30);
+        }
+    }
+
+    IEnumerator Hunger() {
+        // Free 2 mins
+        yield return new WaitForSeconds(180);
+
+        while(true) {
+            food = Mathf.Max(0, food - 5);
+            foodText.text = "Food: " + food;
+
+            if (food <= 50) {
+                foodText.color = Color.red;
+            }
+
+            yield return new WaitForSeconds(60);
         }
     }
 
@@ -105,6 +141,12 @@ class PlayerStats: MonoBehaviour {
 
         if (health <= 0) {
             SceneManager.LoadScene("GameLose");
+        }
+    }
+
+    void OnTriggerEnter(Collider hitCollider) {
+        if (hitCollider.tag == "Finish") {
+            SceneManager.LoadScene("GameWin");
         }
     }
 }

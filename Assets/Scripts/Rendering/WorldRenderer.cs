@@ -140,7 +140,10 @@ public class WorldRenderer : MonoBehaviour
                     continue;
                 }
 
-                PlaceRandomProp(x, z, grassPropPrefabs);
+                // 50% chance to place grass prop
+                if (rand.Next(1) == 0) {
+                    PlaceRandomProp(x, z, grassPropPrefabs);
+                }
             }
         }
     }
