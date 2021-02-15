@@ -52,7 +52,8 @@ public class WorldRenderer : MonoBehaviour
         // Generate Wilderness area around the edges
         int unityXSize = generator.getXLength() * size; 
         int unityZSize = generator.getZLength() * size;
-        DrawWilderness(unityXSize, unityZSize, wildernessWidth * size);
+        int unityWildernessWidth = wildernessWidth * size;
+        DrawWilderness(unityXSize, unityZSize, unityWildernessWidth);
 
         // Bake NavMesh (Requires NaveMeshComponents package)
         NavMeshSurface nm = GameObject.FindObjectOfType<NavMeshSurface>();
@@ -60,11 +61,11 @@ public class WorldRenderer : MonoBehaviour
 
         // Spawn AIs
         aIController.SetSpawnArea(unityXSize, unityZSize);
-        aIController.SetTotalArea(-wildernessWidth, -wildernessWidth, unityXSize + wildernessWidth, unityZSize + wildernessWidth);
+        aIController.SetTotalArea(-unityWildernessWidth, -unityWildernessWidth, unityXSize + unityWildernessWidth, unityZSize + unityWildernessWidth);
 
         // Set player spawn point
         Vector3 spawnPos = generator.GetRandomPosition(mazeSpecs[0]);
-        player.SetSpawnPoint(spawnPos.x * size, spawnPos.z * size);
+        player.SetSpawnPoint(-10, -10);//spawnPos.x * size, spawnPos.z * size);
     }
 
     private void Draw(WorldSpace[,] world) {

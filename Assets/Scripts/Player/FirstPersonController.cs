@@ -47,12 +47,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         }
 
         // Use this for initialization
-        private void Start()
-        {
-            if (spawnXPos <= 0 || spawnZPos <= 0) {
-                throw new ArgumentException("Call SetSpawnArea First");
-            }
-
+        private void Start() {
             m_CharacterController = GetComponent<CharacterController>();
 
             // Set spawn position
