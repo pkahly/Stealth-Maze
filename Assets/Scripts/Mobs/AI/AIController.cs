@@ -20,8 +20,6 @@ struct HuntingStage {
 
 public class AIController : MonoBehaviour {
     public Transform player;
-    [Range(1,50)]
-    public int numAIs = 5;
     public Transform aiPrefab;
     public float turnSpeed = 180;
     public float attackDistance = 10;
@@ -33,6 +31,7 @@ public class AIController : MonoBehaviour {
 
     private static System.Random rand = new System.Random();
 
+    private Config config;
     private AIData[] aiData;
     private int spawnXSize;
     private int spawnZSize;
@@ -56,13 +55,11 @@ public class AIController : MonoBehaviour {
     };
 
     public void SetSpawnArea(int spawnXSize, int spawnZSize) {     
-        aiData = new AIData[numAIs];
         this.spawnXSize = spawnXSize;
         this.spawnZSize = spawnZSize;
     }
 
     public void SetTotalArea(int startX, int startZ, int totalXSize, int totalZSize) {     
-        aiData = new AIData[numAIs];
         this.startX = startX;
         this.startZ = startZ;
         this.totalXSize = totalXSize;
@@ -79,8 +76,10 @@ public class AIController : MonoBehaviour {
 
         obstacleMask = LayerMask.GetMask("Obstacle");
         heavyCoverMask = LayerMask.GetMask("HeavyCover");
+        config = Config.GetInstance();
 
-        for (int i = 0; i < numAIs; i++) {
+        aiData = new AIData[config.numAIs];
+        for (int i = 0; i < config.numAIs; i++) {
             // Create Patrol Path
             Vector3[] patrolPath = GetPatrolPath();
 
@@ -134,7 +133,7 @@ public class AIController : MonoBehaviour {
         float waitTime = 0.1f;
 
         // Give AI's their initial orders
-        for (int i = 0; i < numAIs; i++) {
+        for (int i = 0; i < config.numAIs; i++) {
             aiData[i].attackCooldown = 0;
             aiData[i].spotLight.color = Color.green;
             aiData[i].agent.SetDestination(aiData[i].patrolPath[aiData[i].patrolIndex]);
@@ -145,7 +144,7 @@ public class AIController : MonoBehaviour {
 
         // Update path and look for player
         while (true) {
-            for (int i = 0; i < numAIs; i++) {
+            for (int i = 0; i < config.numAIs; i++) {
                 // Look for player
                 if (CanSeePlayer(aiData[i].transform)) {
                     StartCoroutine(Attack(player.position));
@@ -176,7 +175,7 @@ public class AIController : MonoBehaviour {
 
         while (visibleTimer < timeToLosePlayer) {
             canSeePlayer = false;
-            for (int i = 0; i < numAIs; i++) {
+            for (int i = 0; i < config.numAIs; i++) {
                 aiData[i].spotLight.color = Color.red;
                 aiData[i].attackCooldown -= waitTime;
 
@@ -258,7 +257,7 @@ public class AIController : MonoBehaviour {
 
             // Search until the time limit of the current stage
             while (huntTimer < maxHuntTime) {
-                for (int i = 0; i < numAIs; i++) {
+                for (int i = 0; i < config.numAIs; i++) {
                     aiData[i].spotLight.color = Color.yellow;
 
                     // Look for player

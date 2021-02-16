@@ -25,14 +25,6 @@ public class WorldRenderer : MonoBehaviour
     [Range(0, 50)]
     public int grassPropChance = 3;
 
-    // Maze parameters
-    public MazeSpec[] mazeSpecs;
-    [Min(10)]
-    public int totalMazesXLength;
-    [Min(10)]
-    public int totalMazesZLength;
-    public int wildernessWidth;
-
     // Amplify the x,z values by this much
     [Range(1, 30)]
     public int size = 1;
@@ -42,9 +34,12 @@ public class WorldRenderer : MonoBehaviour
     private WorldGenerator generator;
     
     void Start() {
+        // Get Configuration options
+        Config config = Config.GetInstance();
+
         // Generate World
-        generator = new WorldGenerator(totalMazesXLength, totalMazesZLength);
-        var world = generator.GenerateWorld(mazeSpecs);
+        generator = new WorldGenerator(config.totalMazesXLength, config.totalMazesZLength);
+        var world = generator.GenerateWorld(config.mazeSpecs);
 
         // Render World
         Draw(world);
@@ -52,8 +47,8 @@ public class WorldRenderer : MonoBehaviour
         // Generate Wilderness area around the edges
         int unityXSize = generator.getXLength() * size; 
         int unityZSize = generator.getZLength() * size;
-        int unityWildernessWidth = wildernessWidth * size;
-        if (wildernessWidth > 0) {
+        int unityWildernessWidth = config.wildernessWidth * size;
+        if (unityWildernessWidth > 0) {
             DrawWilderness(unityXSize, unityZSize, unityWildernessWidth);
         }
 
@@ -66,12 +61,12 @@ public class WorldRenderer : MonoBehaviour
         aIController.SetTotalArea(-unityWildernessWidth, -unityWildernessWidth, unityXSize + unityWildernessWidth, unityZSize + unityWildernessWidth);
 
         // Set player spawn point
-        Vector3 spawnPos = generator.GetRandomPosition(mazeSpecs[0]);
+        Vector3 spawnPos = generator.GetRandomPosition(config.mazeSpecs[0]);
         player.SetSpawnPoint(spawnPos.x * size, spawnPos.z * size);
 
         // Launch Item Spawner
         ItemSpawner spawner = gameObject.AddComponent<ItemSpawner>();
-        spawner.Run(itemPrefabs, mazeSpecs, size);
+        spawner.Run(itemPrefabs, config.mazeSpecs, size);
     }
 
     private void Draw(WorldSpace[,] world) {

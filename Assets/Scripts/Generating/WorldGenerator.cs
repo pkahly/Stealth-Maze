@@ -16,7 +16,7 @@ class WorldGenerator {
         this.zLength = ConvertToWorldCoord(totalMazesZLength);
     }
 
-    public WorldSpace[,] GenerateWorld(MazeSpec[] mazeSpecs) {
+    public WorldSpace[,] GenerateWorld(List<MazeSpec> mazeSpecs) {
         // Create Empty World
         WorldSpace[,] world = new WorldSpace[xLength, zLength];
 

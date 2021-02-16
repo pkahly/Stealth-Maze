@@ -8,10 +8,10 @@ public class ItemSpawner : MonoBehaviour {
 
     private Transform[] items;
     private int delay = 180;
-    private MazeSpec[] mazes;
+    private List<MazeSpec> mazes;
     private int size;
 
-    public void Run(Transform[] items, MazeSpec[] mazes, int size) {
+    public void Run(Transform[] items, List<MazeSpec> mazes, int size) {
         this.items = items;
         this.mazes = mazes;
         this.size = size;
