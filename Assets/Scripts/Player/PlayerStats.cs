@@ -112,8 +112,7 @@ class PlayerStats: MonoBehaviour {
         while(true) {
             food = Mathf.Max(0, food - 5);
             UpdateOverlay();
-
-            yield return new WaitForSeconds(60);
+            yield return new WaitForSeconds(180);
         }
     }
 
@@ -164,19 +163,23 @@ class PlayerStats: MonoBehaviour {
         if (health <= 50) {
             healthText.color = Color.red;
         } else {
-            healthText.color = Color.black;
+            healthText.color = Color.white;
         }
 
         if (food <= 50) {
             foodText.color = Color.red;
         } else {
-            foodText.color = Color.black;
+            foodText.color = Color.white;
         }
     }
 
     void OnTriggerEnter(Collider hitCollider) {
         if (hitCollider.tag == "Finish") {
             SceneManager.LoadScene("GameWin");
+        } else if (hitCollider.tag == "Item") {
+            // TODO - get the item parameters from the GameObject we hit
+            inventory.Add(new FoodItem("Apple", 25));
+            Destroy(hitCollider.gameObject);
         }
     }
 }

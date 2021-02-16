@@ -208,6 +208,11 @@ PrefabInstance:
       propertyPath: mazeZLength
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
+        type: 3}
+      propertyPath: courtyardSize
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631755, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
       propertyPath: m_Name
@@ -712,6 +717,11 @@ PrefabInstance:
         type: 3}
       propertyPath: mazeZLength
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5202544754509631754, guid: 8d9e5a27d020612b288b8783d3c234de,
+        type: 3}
+      propertyPath: courtyardSize
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5202544754509631755, guid: 8d9e5a27d020612b288b8783d3c234de,
         type: 3}
@@ -1227,7 +1237,7 @@ PrefabInstance:
     - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
         type: 3}
       propertyPath: numAIs
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6465063226360021217, guid: 57e3e72466d8442e39a3b2eed876d419,
         type: 3}
@@ -1400,7 +1410,7 @@ PrefabInstance:
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: size
-      value: 15
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
@@ -1459,17 +1469,17 @@ PrefabInstance:
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: rarePropChance
-      value: 20
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: grassPropChance
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: wildernessWidth
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
@@ -1506,6 +1516,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
+      propertyPath: itemPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
+        type: 3}
       propertyPath: propPrefabs.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -1529,6 +1544,12 @@ PrefabInstance:
       propertyPath: mazeSpecs.Array.data[3]
       value: 
       objectReference: {fileID: 99703028}
+    - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
+        type: 3}
+      propertyPath: itemPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 803630140895933775, guid: dff4d9d25e1c28071ac109337651bc85,
+        type: 3}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: propPrefabs.Array.data[0]
@@ -1609,7 +1630,8 @@ PrefabInstance:
         type: 3}
       propertyPath: rarePropPrefabs.Array.data[7]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 803630140895933775, guid: dff4d9d25e1c28071ac109337651bc85,
+        type: 3}
     - target: {fileID: 7390512283814829266, guid: 19472e5ef30a3bf31a5e74e8429a5c25,
         type: 3}
       propertyPath: grassPropPrefabs.Array.data[0]

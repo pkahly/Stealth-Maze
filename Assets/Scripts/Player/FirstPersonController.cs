@@ -59,7 +59,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_CharacterController.enabled = false;
             m_CharacterController.transform.position = new Vector3(spawnXPos, 20, spawnZPos);
             m_CharacterController.enabled = true;
-            Debug.Log("Spawning player at " + m_CharacterController.transform.position);
 
             m_Camera = Camera.main;
             m_OriginalCameraPosition = m_Camera.transform.localPosition;
@@ -105,7 +104,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (!isEnabled) {
                 return;
             }
-            
+
             float speed;
             GetInput(out speed);
             // always move along the camera forward as it is the direction that it being aimed at

@@ -49,7 +49,7 @@ class WorldGenerator {
             ApplyMazeToWorld(world, mazeSpec, maze);
 
             // Add Finish Zone
-            AddFinishZone(world, GetRandomPosition(mazeSpec));
+            //AddFinishZone(world, GetRandomPosition(mazeSpec));
         }
     
         return world;

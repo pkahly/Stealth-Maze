@@ -19,6 +19,7 @@ public class WorldRenderer : MonoBehaviour
     // Props
     public Transform[] rarePropPrefabs = null;
     public Transform[] grassPropPrefabs = null;
+    public Transform[] itemPrefabs = null;
     [Range(0, 50)]
     public int rarePropChance = 15;
     [Range(0, 50)]
@@ -30,7 +31,6 @@ public class WorldRenderer : MonoBehaviour
     public int totalMazesXLength;
     [Min(10)]
     public int totalMazesZLength;
-    [Min(1)]
     public int wildernessWidth;
 
     // Amplify the x,z values by this much
@@ -53,7 +53,9 @@ public class WorldRenderer : MonoBehaviour
         int unityXSize = generator.getXLength() * size; 
         int unityZSize = generator.getZLength() * size;
         int unityWildernessWidth = wildernessWidth * size;
-        DrawWilderness(unityXSize, unityZSize, unityWildernessWidth);
+        if (wildernessWidth > 0) {
+            DrawWilderness(unityXSize, unityZSize, unityWildernessWidth);
+        }
 
         // Bake NavMesh (Requires NaveMeshComponents package)
         NavMeshSurface nm = GameObject.FindObjectOfType<NavMeshSurface>();
@@ -65,7 +67,11 @@ public class WorldRenderer : MonoBehaviour
 
         // Set player spawn point
         Vector3 spawnPos = generator.GetRandomPosition(mazeSpecs[0]);
-        player.SetSpawnPoint(-10, -10);//spawnPos.x * size, spawnPos.z * size);
+        player.SetSpawnPoint(spawnPos.x * size, spawnPos.z * size);
+
+        // Launch Item Spawner
+        ItemSpawner spawner = gameObject.AddComponent<ItemSpawner>();
+        spawner.Run(itemPrefabs, mazeSpecs, size);
     }
 
     private void Draw(WorldSpace[,] world) {

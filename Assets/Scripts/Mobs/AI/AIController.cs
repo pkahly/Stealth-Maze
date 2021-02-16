@@ -85,7 +85,7 @@ public class AIController : MonoBehaviour {
             Vector3[] patrolPath = GetPatrolPath();
 
             // Create new instance of prefab at first patrol point
-            var AI = Instantiate(aiPrefab, patrolPath[0], transform.rotation) as Transform;
+            var AI = Instantiate(aiPrefab, patrolPath[0], transform.rotation, transform) as Transform;
 
             // Save AI for later use
             aiData[i] = new AIData();
