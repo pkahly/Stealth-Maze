@@ -31,12 +31,9 @@ class PlayerStats: MonoBehaviour {
         StartCoroutine(RefillHealth());
         StartCoroutine(Hunger());
 
-        // TODO remove
-        inventory.Add(new InventoryItem("Apple"));
-        inventory.Add(new InventoryItem("Axe"));
-        inventory.Add(new InventoryItem("Bottle"));
-        inventory.Add(new InventoryItem("Rock"));
-        inventory.Add(new InventoryItem("Trap"));
+        // Initial Inventory
+        inventory.Add(new FoodItem("Apple", 25));
+        inventory.Add(new FoodItem("Apple", 25));
     }
 
     /*
@@ -82,8 +79,7 @@ class PlayerStats: MonoBehaviour {
             }
 
             // Update UI
-            visibilityText.text = "Visibility: " + visibilityLevel;
-
+            UpdateOverlay();
             yield return new WaitForSeconds(.2f);
         }
     }
@@ -104,13 +100,8 @@ class PlayerStats: MonoBehaviour {
                 }
             }
 
-            if (health <= 50) {
-                healthText.color = Color.red;
-            }
-
-            healthText.text = "Health: " + health;
-            foodText.text = "Food: " + food;
-            yield return new WaitForSeconds(30);
+            UpdateOverlay();
+            yield return new WaitForSeconds(10);
         }
     }
 
@@ -120,11 +111,7 @@ class PlayerStats: MonoBehaviour {
 
         while(true) {
             food = Mathf.Max(0, food - 5);
-            foodText.text = "Food: " + food;
-
-            if (food <= 50) {
-                foodText.color = Color.red;
-            }
+            UpdateOverlay();
 
             yield return new WaitForSeconds(60);
         }
@@ -145,8 +132,8 @@ class PlayerStats: MonoBehaviour {
 
     public void TakeDamage(int damage) {
         health = Mathf.Max(0, health - damage);
-        healthText.text = "Health: " + health;
-
+        UpdateOverlay();
+        
         if (health <= 0) {
             SceneManager.LoadScene("GameLose");
         }
@@ -154,6 +141,37 @@ class PlayerStats: MonoBehaviour {
 
     public List<InventoryItem> GetInventory() {
         return inventory;
+    }
+
+    public void UseItem(int index) {
+        // Remove item
+        InventoryItem item = inventory[index];
+        inventory.RemoveAt(index);
+
+        // Apply all status effects
+        health = Mathf.Min(100, health + item.healthEffect);
+        food = Mathf.Min(100, food + item.foodEffect);
+
+        // Redraw overlay
+        UpdateOverlay();
+    }
+
+    void UpdateOverlay() {
+        healthText.text = "Health: " + health;
+        foodText.text = "Food: " + food;
+        visibilityText.text = "Visibility: " + visibilityLevel;
+
+        if (health <= 50) {
+            healthText.color = Color.red;
+        } else {
+            healthText.color = Color.black;
+        }
+
+        if (food <= 50) {
+            foodText.color = Color.red;
+        } else {
+            foodText.color = Color.black;
+        }
     }
 
     void OnTriggerEnter(Collider hitCollider) {

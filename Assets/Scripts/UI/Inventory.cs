@@ -18,6 +18,7 @@ public class Inventory : MonoBehaviour {
 
     private Transform contentPanel;
     private List<InventorySlot> inventorySlots = new List<InventorySlot>();
+    private int selectionIndex = 0;
 
     void Start() {
         contentPanel = GameObject.FindWithTag("InventoryContent").transform;
@@ -31,6 +32,7 @@ public class Inventory : MonoBehaviour {
     }
 
     void Update() {
+        // Open/Close inventory
         if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.E)) {
             // Show/Hide panel
             panel.SetActive(!panel.activeSelf);
@@ -38,29 +40,42 @@ public class Inventory : MonoBehaviour {
             // Deactivate player controls
             playerController.SetEnabled(!panel.activeSelf);
 
-            // If inventory was opened, build it
+            // Construct/Destruct inventory items
             if (panel.activeSelf) {
                 UpdateInventory();
-            } else {
-                inventorySlots.Clear();
-
-                foreach(Transform child in contentPanel) {
-                    Destroy(child.gameObject);
-                }
             }
+        }
+
+        // Change selection
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) {
+            SelectItem(selectionIndex - 1);
+        }
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) {
+            SelectItem(selectionIndex + 1);
+        }
+
+        // Use item
+        if (Input.GetKeyDown(KeyCode.Return) && inventorySlots.Count > 0) {
+            playerStats.UseItem(selectionIndex);
+            UpdateInventory();
         }
     }
 
     private void UpdateInventory() {
+        // Delete old entries
+        inventorySlots.Clear();
+        foreach(Transform child in contentPanel) {
+            Destroy(child.gameObject);
+        }
+
+        // Add new entries
         foreach (InventoryItem item in playerStats.GetInventory()) {
             AddItem(item);
         }
 
-        // select the first item
-        if (inventorySlots.Count > 0) {
-            Outline outline = inventorySlots[0].text.GetComponent<Outline>();
-            outline.effectColor = Color.yellow;
-        }
+        // Select the first item
+        selectionIndex = 0;
+        SelectItem(selectionIndex);
     }
 
     private void AddItem(InventoryItem item) {
@@ -73,5 +88,23 @@ public class Inventory : MonoBehaviour {
         slot.text.text = item.name;
 
         inventorySlots.Add(slot);
+    }
+
+    private void SelectItem(int index) {
+        if (index < 0 || index >= inventorySlots.Count) {
+            return;
+        }
+
+        // Deselect previous item
+        ChangeSelection(selectionIndex, Color.black);
+
+        // Select new item
+        selectionIndex = index;
+        ChangeSelection(selectionIndex, Color.yellow);
+    }
+
+    private void ChangeSelection(int index, Color color) {
+        Outline outline = inventorySlots[index].text.GetComponent<Outline>();
+        outline.effectColor = color;
     }
 }
