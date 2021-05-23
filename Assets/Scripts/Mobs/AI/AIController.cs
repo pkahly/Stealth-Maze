@@ -23,11 +23,9 @@ public class AIController : MonoBehaviour {
     public Transform aiPrefab;
     public float turnSpeed = 180;
     public float attackDistance = 10;
-    public float aiAttackCooldown = 4;
     public float timeToLosePlayer = 2;
     public AudioSource alarmSound;
     public AudioSource attackSound;
-    public int attackDamage = 10;
 
     private static System.Random rand = new System.Random();
 
@@ -196,8 +194,8 @@ public class AIController : MonoBehaviour {
                             attackSound.Play();
                         }
 
-                        playerStats.TakeDamage(attackDamage);
-                        aiData[i].attackCooldown = aiAttackCooldown;
+                        playerStats.TakeDamage(config.attackDamage);
+                        aiData[i].attackCooldown = config.aiAttackCooldown;
                     }
                 }
                 // Otherwise move closer

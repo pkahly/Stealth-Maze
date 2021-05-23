@@ -20,14 +20,6 @@ public class WorldRenderer : MonoBehaviour
     public Transform[] rarePropPrefabs = null;
     public Transform[] grassPropPrefabs = null;
     public Transform[] itemPrefabs = null;
-    [Range(0, 50)]
-    public int rarePropChance = 15;
-    [Range(0, 50)]
-    public int grassPropChance = 3;
-
-    // Amplify the x,z values by this much
-    [Range(1, 30)]
-    public int size = 1;
 
     public AIController aIController;
     public FirstPersonController player;
@@ -42,14 +34,14 @@ public class WorldRenderer : MonoBehaviour
         var world = generator.GenerateWorld(config.mazeSpecs);
 
         // Render World
-        Draw(world);
+        Draw(world, config);
 
         // Generate Wilderness area around the edges
-        int unityXSize = generator.getXLength() * size; 
-        int unityZSize = generator.getZLength() * size;
-        int unityWildernessWidth = config.wildernessWidth * size;
+        int unityXSize = generator.getXLength() * config.size; 
+        int unityZSize = generator.getZLength() * config.size;
+        int unityWildernessWidth = config.wildernessWidth * config.size;
         if (unityWildernessWidth > 0) {
-            DrawWilderness(unityXSize, unityZSize, unityWildernessWidth);
+            DrawWilderness(unityXSize, unityZSize, unityWildernessWidth, config);
         }
 
         // Bake NavMesh (Requires NaveMeshComponents package)
@@ -62,14 +54,14 @@ public class WorldRenderer : MonoBehaviour
 
         // Set player spawn point
         Vector3 spawnPos = generator.GetRandomPosition(config.mazeSpecs[0]);
-        player.SetSpawnPoint(spawnPos.x * size, spawnPos.z * size);
+        player.SetSpawnPoint(spawnPos.x * config.size, spawnPos.z * config.size);
 
         // Launch Item Spawner
         ItemSpawner spawner = gameObject.AddComponent<ItemSpawner>();
-        spawner.Run(itemPrefabs, config.mazeSpecs, size);
+        spawner.Run(itemPrefabs, config.mazeSpecs, config.size);
     }
 
-    private void Draw(WorldSpace[,] world) {
+    private void Draw(WorldSpace[,] world, Config config) {
         for (int worldX = 0; worldX < generator.getXLength(); worldX++)
         {
             for (int worldZ = 0; worldZ < generator.getZLength(); worldZ++)
@@ -81,41 +73,41 @@ public class WorldRenderer : MonoBehaviour
                 }
 
                 // Convert from data coordinates to unity coordinates
-                int unityX = worldX * size;
-                int unityZ = worldZ * size;
+                int unityX = worldX * config.size;
+                int unityZ = worldZ * config.size;
 
                 if (space.type == WorldSpace.Type.floor) {
-                    DrawSpaceAndScale(unityX, 0, unityZ, brickFloorPrefab);
+                    DrawSpaceAndScale(unityX, 0, unityZ, config.size, brickFloorPrefab);
 
                     // Randomly place grass prop
-                    if (rand.Next(grassPropChance) == 0) {
-                        PlaceRandomProp(unityX, unityZ, grassPropPrefabs);
+                    if (rand.Next(config.grassPropChance) == 0) {
+                        PlaceRandomProp(unityX, unityZ, config.size, grassPropPrefabs);
                     }
 
                     // Randomly place rare prop
-                    if (rand.Next(rarePropChance) == 0) {
-                        PlaceRandomProp(unityX, unityZ, rarePropPrefabs);
+                    if (rand.Next(config.rarePropChance) == 0) {
+                        PlaceRandomProp(unityX, unityZ, config.size, rarePropPrefabs);
                     }
 
                 } else if (space.type == WorldSpace.Type.ground) {
-                    DrawSpaceAndScale(unityX, 0, unityZ, groundPrefab);
+                    DrawSpaceAndScale(unityX, 0, unityZ, config.size, groundPrefab);
 
                     // Randomly place grass prop
-                    if (rand.Next(grassPropChance) == 0) {
-                        PlaceRandomProp(unityX, unityZ, grassPropPrefabs);
+                    if (rand.Next(config.grassPropChance) == 0) {
+                        PlaceRandomProp(unityX, unityZ, config.size, grassPropPrefabs);
                     }
                 } else if (space.type == WorldSpace.Type.wall) {
-                    DrawSpaceAndScale(unityX, 5, unityZ, wallPrefab);
+                    DrawSpaceAndScale(unityX, 5, unityZ, config.size, wallPrefab);
                 } else if (space.type == WorldSpace.Type.finish) {
-                    DrawSpaceAndScale(unityX, 0, unityZ, finishPrefab);
+                    DrawSpaceAndScale(unityX, 0, unityZ, config.size, finishPrefab);
                 }
             }
         }
 
     }
 
-    private void DrawWilderness(int unityXSize, int unityZSize, int wildernessWidth) {
-        float offset = size / 2.0f;
+    private void DrawWilderness(int unityXSize, int unityZSize, int wildernessWidth, Config config) {
+        float offset = config.size / 2.0f;
         float topX = wildernessWidth + unityXSize - offset;
         float topZ = wildernessWidth + unityZSize - offset;
         float bottomX = -(wildernessWidth + offset);
@@ -143,7 +135,7 @@ public class WorldRenderer : MonoBehaviour
 
                 // 50% chance to place grass prop
                 if (rand.Next(1) == 0) {
-                    PlaceRandomProp(x, z, grassPropPrefabs);
+                    PlaceRandomProp(x, z, config.size, grassPropPrefabs);
                 }
             }
         }
@@ -159,7 +151,7 @@ public class WorldRenderer : MonoBehaviour
         obj.position = startPoint + (between * 0.5f);
     }
 
-    private void PlaceRandomProp(float unityX, float unityZ, Transform[] propPrefabs) {
+    private void PlaceRandomProp(float unityX, float unityZ, int size, Transform[] propPrefabs) {
         if (propPrefabs != null && propPrefabs.Length > 0) {
             // Pick random prop
             var prop = propPrefabs[rand.Next(propPrefabs.Length)];
@@ -198,7 +190,7 @@ public class WorldRenderer : MonoBehaviour
         return obj;
     }
 
-    private void DrawSpaceAndScale(int unityX, int yOffset, int unityZ, Transform prefab) {
+    private void DrawSpaceAndScale(int unityX, int yOffset, int unityZ, int size, Transform prefab) {
         // Draw Prefab
          var obj = DrawObj(unityX, yOffset, unityZ, prefab);
 

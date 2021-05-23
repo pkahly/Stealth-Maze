@@ -11,22 +11,24 @@ public class DayNightCycle : MonoBehaviour
     public Text clockText;
     public float daytimeIntensity = 1.5f;
     public float nightimeIntensity = 0.05f;
+    public float realSecondsToGameMinute = 1f;
 
+    private Config config;
     private int hour;
     private int minute;
-    private bool isDaytime;
+    private bool isDaytime;    
 
-    private int sunrise = 8;
-    private int sunset = 20;
-    private float realSecondsToGameMinute = 1f;
+    void Start() {
+        config = Config.GetInstance();
 
-    void Start()
-    {
         hour = 0;
         minute = 0;
         isDaytime = false;
+        clockText.text = "";
 
-        StartCoroutine(TrackTimeOfDay());
+        if (config.enableDayNightCycle) {
+            StartCoroutine(TrackTimeOfDay());
+        }
     }
 
     IEnumerator TrackTimeOfDay() {
@@ -44,25 +46,27 @@ public class DayNightCycle : MonoBehaviour
             }
 
             // Set Light Intensity
-            if (hour >= sunrise && hour < sunset && !isDaytime) {
+            if (hour >= config.sunrise && hour < config.sunset && !isDaytime) {
                 isDaytime = true;
                 sun.intensity = daytimeIntensity;
                 RenderSettings.skybox = daySkybox;
-            } else if ((hour >= sunset || hour < sunrise) && isDaytime) {
+            } else if ((hour >= config.sunset || hour < config.sunrise) && isDaytime) {
                 isDaytime = false;
                 sun.intensity = nightimeIntensity;
                 RenderSettings.skybox = nightSkybox;
             }
 
             // If we are near the boundry, use LERP
-            if (isDaytime && Mathf.Abs(sunset - hour) <= 1) {
+            if (isDaytime && config.sunset - hour <= 1) {
                 sun.intensity = Mathf.Lerp(daytimeIntensity, nightimeIntensity, (minute / 60.0f));
-            } else if (!isDaytime && Mathf.Abs(sunrise - hour) <= 1) {
+            } else if (!isDaytime && config.sunrise - hour <= 1) {
                 sun.intensity = Mathf.Lerp(nightimeIntensity, daytimeIntensity, (minute / 60.0f));
             }
 
             // Update overlay
-            clockText.text = hour + ":" + minute;
+            if (config.showClock) {
+                clockText.text = hour + ":" + minute;
+            }
 
             yield return new WaitForSeconds(realSecondsToGameMinute);
         }
