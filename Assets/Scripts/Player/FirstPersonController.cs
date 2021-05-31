@@ -56,9 +56,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_CharacterController = GetComponent<CharacterController>();
 
             // Set spawn position
-            m_CharacterController.enabled = false;
-            m_CharacterController.transform.position = new Vector3(spawnXPos, 20, spawnZPos);
-            m_CharacterController.enabled = true;
+            MoveTo(spawnXPos, spawnZPos);
 
             m_Camera = Camera.main;
             m_OriginalCameraPosition = m_Camera.transform.localPosition;
@@ -103,6 +101,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private void FixedUpdate() {
             if (!isEnabled) {
                 return;
+            }
+
+            // Check if we are falling through the floor
+            if (m_CharacterController.transform.position.y < -50) {
+                Debug.Log("Respawning");
+                MoveTo(spawnXPos, spawnZPos);
             }
 
             float speed;
@@ -228,6 +232,13 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 StopAllCoroutines();
                 StartCoroutine(!m_IsWalking ? m_FovKick.FOVKickUp() : m_FovKick.FOVKickDown());
             }
+        }
+
+
+        private void MoveTo(float xPos, float zPos) {
+            m_CharacterController.enabled = false;
+            m_CharacterController.transform.position = new Vector3(xPos, 20, zPos);
+            m_CharacterController.enabled = true;
         }
 
 
