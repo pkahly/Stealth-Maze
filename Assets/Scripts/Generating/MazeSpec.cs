@@ -8,16 +8,19 @@ public class MazeSpec {
     
     public int mazeXLength = 50;
     public int mazeZLength = 50;
+
     public int courtyardSize = 0;
+    public int courtyardOpenings = 4;
 
     public int numExits = 0;
 
-    public MazeSpec(int mazeStartX, int mazeStartZ, int mazeXLength, int mazeZLength, int courtyardSize=0, int numExits=0) {
+    public MazeSpec(int mazeStartX, int mazeStartZ, int mazeXLength, int mazeZLength, int courtyardSize=0, int courtyardOpenings=4, int numExits=0) {
         this.mazeStartX = mazeStartX;
         this.mazeStartZ = mazeStartZ;
         this.mazeXLength = mazeXLength;
         this.mazeZLength = mazeZLength;
         this.courtyardSize = courtyardSize;
+        this.courtyardOpenings = courtyardOpenings;
         this.numExits = numExits;
     }
 }

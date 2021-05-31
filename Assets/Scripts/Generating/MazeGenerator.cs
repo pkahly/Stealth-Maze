@@ -31,7 +31,7 @@ public static class MazeGenerator {
         }
 
         // Add a courtyard by marking the nodes visited and remove the interior walls
-        AddCourtyard(maze, width, height, mazeSpec.courtyardSize);
+        AddCourtyard(maze, width, height, mazeSpec.courtyardSize, mazeSpec.courtyardOpenings);
         
         // Generate maze
         maze = ApplyRecursiveBacktracker(maze, width, height);
@@ -152,7 +152,7 @@ public static class MazeGenerator {
         return list;
     }
 
-    private static void AddCourtyard(MazeCell[,] maze, int width, int height, int courtyardSize) {
+    private static void AddCourtyard(MazeCell[,] maze, int width, int height, int courtyardSize, int numOpenings) {
         if (courtyardSize > 0) {
             // Place the courtyard at the maze's center
             int xStart = (width / 2) - (courtyardSize / 2);
@@ -191,9 +191,17 @@ public static class MazeGenerator {
             }
 
             // Knock down a random exterior wall on each side
+            // Stop when we reach the desired number of openings
+            if (numOpenings < 1) {return;}
             maze[xStart, rand.Next(yStart, yEnd)].removeWall(Wall.LEFT);
+
+            if (numOpenings < 2) {return;}
             maze[xEnd, rand.Next(yStart, yEnd)].removeWall(Wall.RIGHT);
+
+            if (numOpenings < 3) {return;}
             maze[rand.Next(xStart, xEnd), yStart].removeWall(Wall.DOWN);
+
+            if (numOpenings < 4) {return;}
             maze[rand.Next(xStart, xEnd), yEnd].removeWall(Wall.UP);
         }
     }

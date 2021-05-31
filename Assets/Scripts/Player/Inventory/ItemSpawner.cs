@@ -10,11 +10,14 @@ public class ItemSpawner : MonoBehaviour {
     private int delay = 180;
     private List<MazeSpec> mazes;
     private int size;
+    private int itemsPerCycle;
 
     public void Run(Transform[] items, List<MazeSpec> mazes, int size) {
         this.items = items;
         this.mazes = mazes;
         this.size = size;
+
+        itemsPerCycle = Config.GetInstance().itemsToSpawn;
 
         StartCoroutine(SpawnItems());
     }

@@ -27,6 +27,7 @@ public class Config {
     // Prop Options
     public int rarePropChance;
     public int grassPropChance;
+    public int itemsToSpawn;
 
     // Day/Night Options
     public bool enableDayNightCycle;
@@ -53,6 +54,7 @@ public class Config {
 
         rarePropChance = 15;
         grassPropChance = 5;
+        itemsToSpawn = 1;
 
         enableDayNightCycle = true;
         sunrise = 8;
