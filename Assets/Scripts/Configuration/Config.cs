@@ -63,10 +63,12 @@ public class Config {
 
     private static Config ReadConfigFile() {
         StreamReader reader = new StreamReader(CONFIG_FILENAME); 
+
         string json = reader.ReadToEnd();
-        Debug.Log(json);
         Config config = JsonUtility.FromJson<Config>(json);
+
         reader.Close();
+        
         return config;
     }
 

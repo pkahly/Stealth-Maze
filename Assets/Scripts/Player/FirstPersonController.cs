@@ -58,6 +58,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             // Set spawn position
             MoveTo(spawnXPos, spawnZPos);
 
+            // Initialize Controller
             m_Camera = Camera.main;
             m_OriginalCameraPosition = m_Camera.transform.localPosition;
             m_FovKick.Setup(m_Camera);
