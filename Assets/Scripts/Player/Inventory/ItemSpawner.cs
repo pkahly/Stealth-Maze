@@ -26,14 +26,16 @@ public class ItemSpawner : MonoBehaviour {
         while(true) {
             foreach (MazeSpec mazeSpec in mazes) {
                 foreach (Transform item in items) {
-                    float x = ConvertToUnityCoord(rand.Next(mazeSpec.mazeStartX, mazeSpec.mazeStartX + mazeSpec.mazeXLength));
-                    float z = ConvertToUnityCoord(rand.Next(mazeSpec.mazeStartZ, mazeSpec.mazeStartZ + mazeSpec.mazeZLength));
+                    for (int i = 0; i < itemsPerCycle; i++) {
+                        float x = ConvertToUnityCoord(rand.Next(mazeSpec.mazeStartX, mazeSpec.mazeStartX + mazeSpec.mazeXLength));
+                        float z = ConvertToUnityCoord(rand.Next(mazeSpec.mazeStartZ, mazeSpec.mazeStartZ + mazeSpec.mazeZLength));
 
-                    // Create new instance of prefab
-                    var obj = Instantiate(item, transform) as Transform;
+                        // Create new instance of prefab
+                        var obj = Instantiate(item, transform) as Transform;
 
-                    // Move to the given position, (in unity coordinates)
-                    obj.position = new Vector3(x, 1, z);
+                        // Move to the given position, (in unity coordinates)
+                        obj.position = new Vector3(x, 1, z);
+                    }
                 }
             }
 

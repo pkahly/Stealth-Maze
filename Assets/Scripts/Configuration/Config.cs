@@ -38,10 +38,10 @@ public class Config {
     // Initialize Default Config
     private Config() {
         mazeSpecs = new List<MazeSpec>();
-        mazeSpecs.Add(new MazeSpec(1, 1, 5, 5, 0, 1));
-        mazeSpecs.Add(new MazeSpec(8, 1, 5, 5, 1, 1));
-        mazeSpecs.Add(new MazeSpec(1, 8, 5, 5, 1, 1));
-        mazeSpecs.Add(new MazeSpec(8, 8, 5, 5, 0, 1));
+        mazeSpecs.Add(new MazeSpec("DFS", 1, 1, 5, 5, 0, 1));
+        mazeSpecs.Add(new MazeSpec("DFS", 8, 1, 5, 5, 1, 1));
+        mazeSpecs.Add(new MazeSpec("DFS", 1, 8, 5, 5, 1, 1));
+        mazeSpecs.Add(new MazeSpec("DFS", 8, 8, 5, 5, 0, 1));
 
         totalMazesXLength = 14;
         totalMazesZLength = 14;

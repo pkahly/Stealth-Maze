@@ -47,14 +47,10 @@ public class DayNightCycle : MonoBehaviour
 
             // Set Light Intensity
             if (hour >= config.sunrise && hour < config.sunset && !isDaytime) {
-                Debug.Log("Switch to daytime");
-
                 isDaytime = true;
                 sun.intensity = daytimeIntensity;
                 RenderSettings.skybox = daySkybox;
             } else if ((hour >= config.sunset || hour < config.sunrise) && isDaytime) {
-                Debug.Log("Switch to nightime");
-
                 isDaytime = false;
                 sun.intensity = nightimeIntensity;
                 RenderSettings.skybox = nightSkybox;
@@ -62,10 +58,8 @@ public class DayNightCycle : MonoBehaviour
 
             // If we are near the boundry, use LERP
             if (isDaytime && config.sunset - hour == 1) {
-                Debug.Log("Sunset: " + minute);
                 sun.intensity = Mathf.Lerp(daytimeIntensity, nightimeIntensity, (minute / 60.0f));
             } else if (!isDaytime && config.sunrise - hour == 1) {
-                Debug.Log("Sunrise: " + minute);
                 sun.intensity = Mathf.Lerp(nightimeIntensity, daytimeIntensity, (minute / 60.0f));
             }
 

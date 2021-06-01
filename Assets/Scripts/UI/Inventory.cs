@@ -27,11 +27,20 @@ public class Inventory : MonoBehaviour {
         panel.SetActive(false);
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null) {
+            Debug.Log("Cannot find player");
+            return;
+        }
+
         playerController = player.GetComponent<FirstPersonController>();
         playerStats = player.GetComponent<PlayerStats>();
     }
 
     void Update() {
+        if (playerStats == null) {
+            return;
+        }
+
         // Open/Close inventory
         if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.E)) {
             // Show/Hide panel
