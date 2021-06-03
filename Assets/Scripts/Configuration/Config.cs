@@ -22,8 +22,11 @@ public class Config {
     // AI Options
     public int numPatrolAIs;
     public int numReserveAIs;
+    public float timeToLosePlayer;
     public float aiAttackCooldown;
     public int attackDamage;
+    public int huntingTime;
+    public int huntingStepDistance;
 
     // Prop Options
     public int rarePropChance;
@@ -51,8 +54,11 @@ public class Config {
 
         numPatrolAIs = 10;
         numReserveAIs = 0;
+        timeToLosePlayer = 5;
         aiAttackCooldown = 4;
         attackDamage = 10;
+        huntingTime = 360;
+        huntingStepDistance = 20;
 
         rarePropChance = 15;
         grassPropChance = 5;

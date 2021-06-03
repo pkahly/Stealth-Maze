@@ -4,17 +4,11 @@ using System;
 using UnityEngine;
 using UnityEngine.AI;
 
-struct HuntingStage {
-    public float maxHuntTime;
-    public int huntDistance;
-}
-
 public class AIController : MonoBehaviour {
     public Transform player;
     public Transform aiPrefab;
     public float turnSpeed = 180;
     public float attackDistance = 10;
-    public float timeToLosePlayer = 2;
     public AudioSource alarmSound;
     public AudioSource attackSound;
 
@@ -102,8 +96,7 @@ public class AIController : MonoBehaviour {
             // Spawn at first patrol point
             startPoint = patrolPath[0];
         } else if (type == AIType.RESERVE) {
-            aiData.reservePoint = reservePoint;
-            startPoint = reservePoint;
+            startPoint = RandomPointNear(reservePoint, 10);
         } else {
             throw new ArgumentException("Unrecognized type: " + type);
         }
@@ -115,6 +108,7 @@ public class AIController : MonoBehaviour {
         aiData.spotLight = AI.Find("Spotlight").GetComponent<Light>();
         aiData.agent = AI.GetComponent<NavMeshAgent>();
         aiData.type = type;
+        aiData.startPoint = startPoint;
 
         return aiData;
     }
@@ -144,6 +138,13 @@ public class AIController : MonoBehaviour {
         }
 
         return patrolPath;
+    }
+
+    Vector3 RandomPointNear(Vector3 oldPos, int distance) {
+        int x = rand.Next((int)oldPos.x - distance, (int)oldPos.x + distance);
+        int z = rand.Next((int)oldPos.z - distance, (int)oldPos.z + distance);
+
+        return GetNavPosition(new Vector3(x, 0, z));
     }
 
     IEnumerator Patrol() {
@@ -181,7 +182,7 @@ public class AIController : MonoBehaviour {
         bool canSeePlayer = true;
         float visibleTimer = 0;
 
-        while (visibleTimer < timeToLosePlayer) {
+        while (visibleTimer < config.timeToLosePlayer) {
             canSeePlayer = false;
             for (int i = 0; i < aiDataList.Count; i++) {
                 aiDataList[i].spotLight.color = Color.red;
@@ -208,9 +209,10 @@ public class AIController : MonoBehaviour {
                         aiDataList[i].attackCooldown = config.aiAttackCooldown;
                     }
                 }
-                // Otherwise move closer
+                // Otherwise follow player's actual position
+                // (Prevents AI from stopping at the first obstacle)
                 else {
-                    aiDataList[i].agent.SetDestination(lastSeenPosition);
+                    aiDataList[i].agent.SetDestination(player.position);
                 }
             }
 
@@ -225,79 +227,44 @@ public class AIController : MonoBehaviour {
             yield return new WaitForSeconds(waitTime);
         }
 
+        // Stop the alarm and begin hunting
+        alarmSound.Stop();
         StartCoroutine(Hunt(lastSeenPosition));
     }
 
     IEnumerator Hunt(Vector3 lastSeenPosition) {
         float waitTime = 0.1f;
+        float huntTimer = 0;
 
-        HuntingStage[] stages = new HuntingStage[4] {
-            new HuntingStage {
-                maxHuntTime = 10,
-                huntDistance = (spawnXSize / 10),
-            },
-            new HuntingStage {
-                maxHuntTime = 30,
-                huntDistance = (spawnXSize / 2),
-            },
-            new HuntingStage {
-                maxHuntTime = 60,
-                huntDistance = spawnXSize,
-            },
-            new HuntingStage {
-                maxHuntTime = 240,
-                huntDistance = totalXSize,
-            },
-        };  
+        // Search until the time limit
+        while (huntTimer < config.huntingTime) {
+            for (int i = 0; i < aiDataList.Count; i++) {
+                aiDataList[i].spotLight.color = Color.yellow;
 
-        // Hunting has multiple stages
-        // Each stage has a time limit and a search distance
-        for (int stage = 0; stage < stages.Length; stage++) {
-            float maxHuntTime = stages[stage].maxHuntTime;
-            int huntDistance = stages[stage].huntDistance;
-            float huntTimer = 0;
+                // Look for player
+                if (CanSeePlayer(aiDataList[i].transform)) {
+                    StartCoroutine(Attack(player.position));
+                    yield break;
+                }
 
-            // Compute coordinates for hunting area
-            int minX = (int)Mathf.Max(startX, lastSeenPosition.x - huntDistance);
-            int maxX = (int)Mathf.Min(totalXSize, lastSeenPosition.x + huntDistance);
-            int minZ = (int)Mathf.Max(startZ, lastSeenPosition.z - huntDistance);
-            int maxZ = (int)Mathf.Min(totalZSize, lastSeenPosition.z + huntDistance);
-
-            // Search until the time limit of the current stage
-            while (huntTimer < maxHuntTime) {
-                for (int i = 0; i < aiDataList.Count; i++) {
-                    aiDataList[i].spotLight.color = Color.yellow;
-
-                    // Look for player
-                    if (CanSeePlayer(aiDataList[i].transform)) {
-                        StartCoroutine(Attack(player.position));
-                        yield break;
-                    }
-
-                    // Pick next search point
-                    if (Mathf.Abs(aiDataList[i].agent.velocity.x) < 1 && Mathf.Abs(aiDataList[i].agent.velocity.z) < 1) {
-                        for (int retries = 0; retries < 10; retries++) {
-                            int x = rand.Next(minX, maxX);
-                            int z = rand.Next(minZ, maxZ);
-
-                            try {
-                                Vector3 position = GetNavPosition(new Vector3(x, 0, z));
-                                aiDataList[i].agent.SetDestination(position);
-                                break;
-                            } catch(ArgumentException ex) {
-                                Debug.Log(ex);
-                            }
-                        }
+                // Pick next search point
+                if (Mathf.Abs(aiDataList[i].agent.velocity.x) < 1 && Mathf.Abs(aiDataList[i].agent.velocity.z) < 1) {
+                    // Random point within hunting step distance of the AI's current location
+                    try {
+                        Vector3 position = RandomPointNear(aiDataList[i].transform.position, config.huntingStepDistance);
+                        aiDataList[i].agent.SetDestination(position);
+                        break;
+                    } catch(ArgumentException ex) {
+                        Debug.Log(ex);
                     }
                 }
-                
-                huntTimer += waitTime;
-                yield return new WaitForSeconds(waitTime);
             }
-
-            // Stop the alarm after the first stage of hunting
-            alarmSound.Stop();
+            
+            huntTimer += waitTime;
+            yield return new WaitForSeconds(waitTime);
         }
+
+        
 
         StartCoroutine(Patrol());
     }

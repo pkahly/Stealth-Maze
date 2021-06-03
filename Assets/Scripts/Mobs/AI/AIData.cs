@@ -20,7 +20,7 @@ class AIData {
     // Patrol
     public int patrolIndex;
     public Vector3[] patrolPath;
-    public Vector3 reservePoint;
+    public Vector3 startPoint;
 
     // Attack
     public float attackCooldown;
@@ -37,7 +37,9 @@ class AIData {
                 agent.SetDestination(patrolPath[patrolIndex]);
             }
         } else if (type == AIType.RESERVE) {
-            agent.SetDestination(reservePoint);
+            if (Vector3.Distance(transform.position, startPoint) > 5) {
+                agent.SetDestination(startPoint);
+            }
         }
     }
 }
