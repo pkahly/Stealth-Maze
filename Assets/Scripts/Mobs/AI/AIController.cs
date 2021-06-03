@@ -4,29 +4,6 @@ using System;
 using UnityEngine;
 using UnityEngine.AI;
 
-enum AIType {
-    PATROL,
-    RESERVE
-}
-
-// Represents one AI agent
-class AIData {
-    // Unity objects
-    public Transform transform;
-    public NavMeshAgent agent;
-    public Light spotLight;
-
-    // Type
-    public AIType type;
-
-    // Patrol
-    public int patrolIndex;
-    public Vector3[] patrolPath;
-
-    // Attack
-    public float attackCooldown;
-}
-
 struct HuntingStage {
     public float maxHuntTime;
     public int huntDistance;
@@ -51,6 +28,7 @@ public class AIController : MonoBehaviour {
     private int startZ;
     private int totalXSize;
     private int totalZSize;
+    private Vector3 reservePoint;
     private int patrolPathSize = 6;
     private PlayerStats playerStats;
     private LayerMask obstacleMask;
@@ -90,6 +68,9 @@ public class AIController : MonoBehaviour {
         heavyCoverMask = LayerMask.GetMask("HeavyCover");
         config = Config.GetInstance();
 
+        // Pick a spot for the reserve units to gather
+        reservePoint = GetNavPosition(new Vector3(rand.Next(spawnXSize), 0, rand.Next(spawnZSize)));
+
         // Create AI's
         aiDataList = new List<AIData>();
 
@@ -111,13 +92,24 @@ public class AIController : MonoBehaviour {
     private AIData CreateAI(AIType type) {
         AIData aiData = new AIData();
         
-        // Create Patrol Path
-        Vector3[] patrolPath = GetPatrolPath();
-        aiData.patrolIndex = 0;
-        aiData.patrolPath = patrolPath;
+        Vector3 startPoint;
+        if (type == AIType.PATROL) {
+            // Create Patrol Path
+            Vector3[] patrolPath = GetPatrolPath();
+            aiData.patrolIndex = 0;
+            aiData.patrolPath = patrolPath;
 
-        // Create new instance of prefab at first patrol point
-        var AI = Instantiate(aiPrefab, patrolPath[0], transform.rotation, transform) as Transform;
+            // Spawn at first patrol point
+            startPoint = patrolPath[0];
+        } else if (type == AIType.RESERVE) {
+            aiData.reservePoint = reservePoint;
+            startPoint = reservePoint;
+        } else {
+            throw new ArgumentException("Unrecognized type: " + type);
+        }
+
+        // Create new instance of prefab at startPoint
+        var AI = Instantiate(aiPrefab, startPoint, transform.rotation, transform) as Transform;
 
         aiData.transform = AI;
         aiData.spotLight = AI.Find("Spotlight").GetComponent<Light>();
@@ -157,11 +149,10 @@ public class AIController : MonoBehaviour {
     IEnumerator Patrol() {
         float waitTime = 0.1f;
 
-        // Give AI's their initial orders
+        // Initial Setup
         for (int i = 0; i < aiDataList.Count; i++) {
             aiDataList[i].attackCooldown = 0;
             aiDataList[i].spotLight.color = Color.green;
-            aiDataList[i].agent.SetDestination(aiDataList[i].patrolPath[aiDataList[i].patrolIndex]);
         }
 
         alarmSound.Stop();
@@ -176,15 +167,7 @@ public class AIController : MonoBehaviour {
                     yield break;
                 }
 
-                // Update Patrol Path
-                if (Mathf.Abs(aiDataList[i].agent.velocity.x) == 0 && Mathf.Abs(aiDataList[i].agent.velocity.z) == 0) {
-                    aiDataList[i].patrolIndex += 1;
-                    if (aiDataList[i].patrolIndex >= aiDataList[i].patrolPath.Length) {
-                        aiDataList[i].patrolIndex = 0;
-                    }
-
-                    aiDataList[i].agent.SetDestination(aiDataList[i].patrolPath[aiDataList[i].patrolIndex]);
-                }
+                aiDataList[i].UpdateDestination();
             }
 
             yield return new WaitForSeconds(waitTime);
