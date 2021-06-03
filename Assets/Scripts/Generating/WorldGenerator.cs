@@ -55,6 +55,16 @@ class WorldGenerator {
         return world;
     }
 
+    public Vector3 GetRandomPosition(List<MazeSpec> mazeSpecs) {
+        // Place the player inside a maze if possible
+        if (mazeSpecs.Count > 0) {
+            return GetRandomPosition(mazeSpecs[rand.Next(mazeSpecs.Count)]);
+        }
+
+        // If there aren't any mazes, choose a random position from the entire world area
+        return new Vector3(rand.Next(xLength), 0, rand.Next(zLength));
+    }
+
     public Vector3 GetRandomPosition(MazeSpec mazeSpec) {
         int xPos = ConvertToWorldCoord(mazeSpec.mazeStartX + rand.Next(mazeSpec.mazeXLength));
         int zPos = ConvertToWorldCoord(mazeSpec.mazeStartZ + rand.Next(mazeSpec.mazeZLength));

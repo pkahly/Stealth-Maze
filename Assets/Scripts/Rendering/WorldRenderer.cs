@@ -53,7 +53,7 @@ public class WorldRenderer : MonoBehaviour
         aIController.SetTotalArea(-unityWildernessWidth, -unityWildernessWidth, unityXSize + unityWildernessWidth, unityZSize + unityWildernessWidth);
 
         // Set player spawn point
-        Vector3 spawnPos = generator.GetRandomPosition(config.mazeSpecs[0]);
+        Vector3 spawnPos = generator.GetRandomPosition(config.mazeSpecs);
         player.SetSpawnPoint(spawnPos.x * config.size, spawnPos.z * config.size);
 
         // Launch Item Spawner

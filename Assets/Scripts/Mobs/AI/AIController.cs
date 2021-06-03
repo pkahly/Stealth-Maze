@@ -90,10 +90,15 @@ public class AIController : MonoBehaviour {
         heavyCoverMask = LayerMask.GetMask("HeavyCover");
         config = Config.GetInstance();
 
+        // Create AI's
         aiDataList = new List<AIData>();
 
         for (int i = 0; i < config.numPatrolAIs; i++) {
             aiDataList.Add(CreateAI(AIType.PATROL));
+        }
+
+        for (int i = 0; i < config.numReserveAIs; i++) {
+            aiDataList.Add(CreateAI(AIType.RESERVE));
         }
 
         // Get reference to Player's stats
@@ -104,19 +109,20 @@ public class AIController : MonoBehaviour {
     }
 
     private AIData CreateAI(AIType type) {
+        AIData aiData = new AIData();
+        
         // Create Patrol Path
         Vector3[] patrolPath = GetPatrolPath();
+        aiData.patrolIndex = 0;
+        aiData.patrolPath = patrolPath;
 
         // Create new instance of prefab at first patrol point
         var AI = Instantiate(aiPrefab, patrolPath[0], transform.rotation, transform) as Transform;
 
-        AIData aiData = new AIData();
         aiData.transform = AI;
         aiData.spotLight = AI.Find("Spotlight").GetComponent<Light>();
         aiData.agent = AI.GetComponent<NavMeshAgent>();
         aiData.type = type;
-        aiData.patrolIndex = 0;
-        aiData.patrolPath = patrolPath;
 
         return aiData;
     }
