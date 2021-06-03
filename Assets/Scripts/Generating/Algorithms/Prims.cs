@@ -21,6 +21,7 @@ class Prims : Algorithm {
 
         // Start at 0,0
         var currentPosition = new Position { x = 0, y = 0 };
+        maze[0, 0].markVisited();
         AddNeighbours(unvisitedCells, currentPosition, maze, width, height);
         
         while (unvisitedCells.Count > 0) {

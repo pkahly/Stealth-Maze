@@ -4,12 +4,26 @@ using System;
 using UnityEngine;
 using UnityEngine.AI;
 
-struct AIData {
+enum AIType {
+    PATROL,
+    RESERVE
+}
+
+// Represents one AI agent
+class AIData {
+    // Unity objects
     public Transform transform;
     public NavMeshAgent agent;
     public Light spotLight;
+
+    // Type
+    public AIType type;
+
+    // Patrol
     public int patrolIndex;
     public Vector3[] patrolPath;
+
+    // Attack
     public float attackCooldown;
 }
 
@@ -30,7 +44,7 @@ public class AIController : MonoBehaviour {
     private static System.Random rand = new System.Random();
 
     private Config config;
-    private AIData[] aiData;
+    private List<AIData> aiDataList;
     private int spawnXSize;
     private int spawnZSize;
     private int startX;
@@ -76,21 +90,10 @@ public class AIController : MonoBehaviour {
         heavyCoverMask = LayerMask.GetMask("HeavyCover");
         config = Config.GetInstance();
 
-        aiData = new AIData[config.numAIs];
-        for (int i = 0; i < config.numAIs; i++) {
-            // Create Patrol Path
-            Vector3[] patrolPath = GetPatrolPath();
+        aiDataList = new List<AIData>();
 
-            // Create new instance of prefab at first patrol point
-            var AI = Instantiate(aiPrefab, patrolPath[0], transform.rotation, transform) as Transform;
-
-            // Save AI for later use
-            aiData[i] = new AIData();
-            aiData[i].transform = AI;
-            aiData[i].spotLight = AI.Find("Spotlight").GetComponent<Light>();
-            aiData[i].agent = AI.GetComponent<NavMeshAgent>();
-            aiData[i].patrolIndex = 0;
-            aiData[i].patrolPath = patrolPath;
+        for (int i = 0; i < config.numPatrolAIs; i++) {
+            aiDataList.Add(CreateAI(AIType.PATROL));
         }
 
         // Get reference to Player's stats
@@ -98,6 +101,24 @@ public class AIController : MonoBehaviour {
 
         // Start AI Movement
         StartCoroutine(Patrol());
+    }
+
+    private AIData CreateAI(AIType type) {
+        // Create Patrol Path
+        Vector3[] patrolPath = GetPatrolPath();
+
+        // Create new instance of prefab at first patrol point
+        var AI = Instantiate(aiPrefab, patrolPath[0], transform.rotation, transform) as Transform;
+
+        AIData aiData = new AIData();
+        aiData.transform = AI;
+        aiData.spotLight = AI.Find("Spotlight").GetComponent<Light>();
+        aiData.agent = AI.GetComponent<NavMeshAgent>();
+        aiData.type = type;
+        aiData.patrolIndex = 0;
+        aiData.patrolPath = patrolPath;
+
+        return aiData;
     }
 
     private Vector3 GetNavPosition(Vector3 center) {
@@ -131,10 +152,10 @@ public class AIController : MonoBehaviour {
         float waitTime = 0.1f;
 
         // Give AI's their initial orders
-        for (int i = 0; i < config.numAIs; i++) {
-            aiData[i].attackCooldown = 0;
-            aiData[i].spotLight.color = Color.green;
-            aiData[i].agent.SetDestination(aiData[i].patrolPath[aiData[i].patrolIndex]);
+        for (int i = 0; i < aiDataList.Count; i++) {
+            aiDataList[i].attackCooldown = 0;
+            aiDataList[i].spotLight.color = Color.green;
+            aiDataList[i].agent.SetDestination(aiDataList[i].patrolPath[aiDataList[i].patrolIndex]);
         }
 
         alarmSound.Stop();
@@ -142,21 +163,21 @@ public class AIController : MonoBehaviour {
 
         // Update path and look for player
         while (true) {
-            for (int i = 0; i < config.numAIs; i++) {
+            for (int i = 0; i < aiDataList.Count; i++) {
                 // Look for player
-                if (CanSeePlayer(aiData[i].transform)) {
+                if (CanSeePlayer(aiDataList[i].transform)) {
                     StartCoroutine(Attack(player.position));
                     yield break;
                 }
 
                 // Update Patrol Path
-                if (Mathf.Abs(aiData[i].agent.velocity.x) == 0 && Mathf.Abs(aiData[i].agent.velocity.z) == 0) {
-                    aiData[i].patrolIndex += 1;
-                    if (aiData[i].patrolIndex >= aiData[i].patrolPath.Length) {
-                        aiData[i].patrolIndex = 0;
+                if (Mathf.Abs(aiDataList[i].agent.velocity.x) == 0 && Mathf.Abs(aiDataList[i].agent.velocity.z) == 0) {
+                    aiDataList[i].patrolIndex += 1;
+                    if (aiDataList[i].patrolIndex >= aiDataList[i].patrolPath.Length) {
+                        aiDataList[i].patrolIndex = 0;
                     }
 
-                    aiData[i].agent.SetDestination(aiData[i].patrolPath[aiData[i].patrolIndex]);
+                    aiDataList[i].agent.SetDestination(aiDataList[i].patrolPath[aiDataList[i].patrolIndex]);
                 }
             }
 
@@ -173,34 +194,34 @@ public class AIController : MonoBehaviour {
 
         while (visibleTimer < timeToLosePlayer) {
             canSeePlayer = false;
-            for (int i = 0; i < config.numAIs; i++) {
-                aiData[i].spotLight.color = Color.red;
-                aiData[i].attackCooldown -= waitTime;
+            for (int i = 0; i < aiDataList.Count; i++) {
+                aiDataList[i].spotLight.color = Color.red;
+                aiDataList[i].attackCooldown -= waitTime;
 
                 // Check if anyone can see the player
                 if (!canSeePlayer) {
-                    canSeePlayer = CanSeePlayer(aiData[i].transform);
+                    canSeePlayer = CanSeePlayer(aiDataList[i].transform);
                 }
 
                 // Attack if close enough
-                if (Vector3.Distance(aiData[i].transform.position, lastSeenPosition) <= attackDistance) {
+                if (Vector3.Distance(aiDataList[i].transform.position, lastSeenPosition) <= attackDistance) {
                     // Stop and face player
-                    aiData[i].agent.SetDestination(aiData[i].transform.position);
-                    StartCoroutine(TurnToFace(aiData[i].transform, lastSeenPosition));
+                    aiDataList[i].agent.SetDestination(aiDataList[i].transform.position);
+                    StartCoroutine(TurnToFace(aiDataList[i].transform, lastSeenPosition));
                 
                     // Attempt attack
-                    if (canSeePlayer && rand.Next(1) == 0 && aiData[i].attackCooldown <= 0) {
+                    if (canSeePlayer && rand.Next(1) == 0 && aiDataList[i].attackCooldown <= 0) {
                         if (!attackSound.isPlaying) {
                             attackSound.Play();
                         }
 
                         playerStats.TakeDamage(config.attackDamage);
-                        aiData[i].attackCooldown = config.aiAttackCooldown;
+                        aiDataList[i].attackCooldown = config.aiAttackCooldown;
                     }
                 }
                 // Otherwise move closer
                 else {
-                    aiData[i].agent.SetDestination(lastSeenPosition);
+                    aiDataList[i].agent.SetDestination(lastSeenPosition);
                 }
             }
 
@@ -255,24 +276,24 @@ public class AIController : MonoBehaviour {
 
             // Search until the time limit of the current stage
             while (huntTimer < maxHuntTime) {
-                for (int i = 0; i < config.numAIs; i++) {
-                    aiData[i].spotLight.color = Color.yellow;
+                for (int i = 0; i < aiDataList.Count; i++) {
+                    aiDataList[i].spotLight.color = Color.yellow;
 
                     // Look for player
-                    if (CanSeePlayer(aiData[i].transform)) {
+                    if (CanSeePlayer(aiDataList[i].transform)) {
                         StartCoroutine(Attack(player.position));
                         yield break;
                     }
 
                     // Pick next search point
-                    if (Mathf.Abs(aiData[i].agent.velocity.x) < 1 && Mathf.Abs(aiData[i].agent.velocity.z) < 1) {
+                    if (Mathf.Abs(aiDataList[i].agent.velocity.x) < 1 && Mathf.Abs(aiDataList[i].agent.velocity.z) < 1) {
                         for (int retries = 0; retries < 10; retries++) {
                             int x = rand.Next(minX, maxX);
                             int z = rand.Next(minZ, maxZ);
 
                             try {
                                 Vector3 position = GetNavPosition(new Vector3(x, 0, z));
-                                aiData[i].agent.SetDestination(position);
+                                aiDataList[i].agent.SetDestination(position);
                                 break;
                             } catch(ArgumentException ex) {
                                 Debug.Log(ex);

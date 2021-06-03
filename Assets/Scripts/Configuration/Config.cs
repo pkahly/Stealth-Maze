@@ -20,7 +20,8 @@ public class Config {
     public int size;
 
     // AI Options
-    public int numAIs;
+    public int numPatrolAIs;
+    public int numReserveAIs;
     public float aiAttackCooldown;
     public int attackDamage;
 
@@ -48,7 +49,8 @@ public class Config {
         wildernessWidth = 3;
         size = 10;
 
-        numAIs = 10;
+        numPatrolAIs = 10;
+        numReserveAIs = 0;
         aiAttackCooldown = 4;
         attackDamage = 10;
 
